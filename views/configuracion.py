@@ -6,12 +6,15 @@ from PIL import Image, ImageTk
 import sys
 sys.path.append("..\\")
 from controls.getstarted import getStarted 
+from organizations import Organizations
+
 import json
 
 class Configuracion():
     
 
     def __init__(self, root):
+        self.root = root
         self.apikeyValue = StringVar()
         self.merakiInfo = ""
         self.newConfig = []
@@ -34,14 +37,23 @@ class Configuracion():
         self.grupoAPI = pmw.Group(self.masterConfig,tag_text="API Key")
         self.grupoAPI.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
         self.apikey = Frame(self.grupoAPI.interior())
-
-        self.apikeyEntry = Entry(self.apikey,textvariable=self.apikeyValue).pack(side=LEFT,expand=NO)
-        self.buscar = Button(self.apikey,text="Buscar",command=self.Show)
-        self.buscar.pack(side=LEFT, expand=NO)
+        self.containerLabel = Frame(self.apikey)
+        self.apikeyLabel = Label(self.containerLabel,text="Para poder visualizar las redes disponibles en sus organizaciones, es necesario generar una API Key. \n\nIntroduzca su API Key")
+        self.apikeyLabel.pack(side=TOP, expand=YES, fill=BOTH)
+        self.containerLabel.pack(side=TOP, anchor=CENTER)
+        self.containerEntry = Frame(self.apikey)
+        self.apikeyEntry = Entry(self.containerEntry,textvariable=self.apikeyValue).pack(side=LEFT,expand=NO)
+        self.buscar = Button(self.containerEntry,text="Buscar",command=self.Show)
+        self.buscar.pack(side=LEFT, expand=NO, padx=2)
+        self.containerEntry.pack(side=TOP, anchor=CENTER)
+        self.containerResult = Frame(self.apikey)
+        self.resultLabel = Label(self.containerResult,text="")
+        self.resultLabel.pack(side=TOP, expand=YES, fill=BOTH)
+        self.containerResult.pack(side=TOP, anchor=CENTER)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Subgrupo Resultados                                       ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        self.grupoResult = pmw.Group(self.grupoAPI.interior(),tag_text="Resultados")
+        """self.grupoResult = pmw.Group(self.grupoAPI.interior(),tag_text="Resultados")
         self.grupoResult.pack(side=BOTTOM,expand=YES,fill=BOTH,padx=3,pady=2)
         self.OrganizationTable = ttk.Treeview(self.grupoResult.interior(),selectmode='none')
         self.OrganizationTable['columns'] = ('organization_id', 'organization_name','network_name')
@@ -59,13 +71,14 @@ class Configuracion():
         #self.OrganizationTable.heading("selected",text="",anchor=CENTER)
 
         self.OrganizationTable.pack(side=BOTTOM,expand=YES,fill=BOTH,padx=3,pady=2)
-        self.OrganizationTable.bind("<ButtonRelease-1>",self.select)
-        self.apikey.pack(side=LEFT,expand=YES, fill=BOTH)
+        self.OrganizationTable.bind("<ButtonRelease-1>",self.select)"""
+        self.apikey.pack(side=TOP,expand=YES, fill=BOTH)
 
         self.configure = Frame(self.grupoAPI.interior())
-        self.addRule = Button(self.configure,text="Configurar",command=self.configurar)
+        self.addRule = Button(self.configure,text="Comenzar",command=self.configurar)
         self.addRule.pack(side=RIGHT,padx=120)
-        self.configure.pack(side=BOTTOM,expand=YES, fill=BOTH)
+        self.addRule.config(state='disabled')
+        self.configure.pack(side=TOP,expand=YES, fill=BOTH)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Configuración Notebook                                    ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::        
@@ -80,15 +93,29 @@ class Configuracion():
 
     def Show(self):
         newConfigObj = getStarted(self.apikeyValue.get())
-        self.merakiInfo = newConfigObj.getInfo()
-        n = 1
+        self.merakiInfo,status = newConfigObj.getInfo()
+        if status:
+            self.addRule.config(state='normal')
+            self.resultLabel.config(text="Su API Key es válida y puede comenzar a usar la aplicación")
+        else:
+            self.resultLabel.config(text="Su API Key es inválida, por favor verifíquela")
+        """n = 1
         for organization in self.merakiInfo:
             for network in organization['networks']:
                 self.OrganizationTable.insert(parent='',index='end',iid=n,text='',values=(n,organization['organizationName'],network['Name']))
-                n+=1
+                n+=1"""
 
     def configurar(self):
-        curItem = self.OrganizationTable.selection()
+        self.root.destroy()
+        root = Tk()
+        root.geometry("800x500")
+        root.resizable(width=False, height=False)
+
+        ventanaOrganization = Organizations(root,self.apikeyValue.get(),self.merakiInfo)
+
+        root.mainloop()
+        
+        """curItem = self.OrganizationTable.selection()
         aux = []
         for item in curItem:
             #print(self.OrganizationTable.item(item)['values'])
@@ -105,7 +132,7 @@ class Configuracion():
                         aux.append(data)
         self.newConfig.append({"key":self.apikeyValue.get(),"configuration":aux})
         with open('../data/currentConfig.json','w') as fp:
-            json.dump(self.newConfig,fp,indent = 4)
+            json.dump(self.newConfig,fp,indent = 4)"""
                         
 
 root = Tk()

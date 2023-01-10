@@ -5,6 +5,7 @@ class getStarted():
         self.__dashboard = meraki.DashboardAPI(apikey)
         self.__organizationsID = self.__dashboard.organizations.getOrganizations()
         self.__networksID = []
+        self.status = False
 
     def setInfo(self):
         for organization in self.__organizationsID:
@@ -20,9 +21,15 @@ class getStarted():
             self.__networksID.append(data)
             
     def getInfo(self):
-        self.setInfo()
-        print(self.__networksID)
-        return self.__networksID
+        try:
+            self.setInfo()
+            self.status = True
+            return self.__networksID,self.status
+        except:
+            return None,self.status
+
+        #print(self.__networksID)
+        
 
 
 
