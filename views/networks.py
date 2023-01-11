@@ -10,12 +10,12 @@ class Networks():
         self.organization = organization
         self.merakiInfo = meraki
         self.syslogValue = StringVar()
-        self.NetworkNotebook = ttk.Notebook(root)
+        #self.NetworkNotebook = ttk.Notebook(root)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                           Página de templates disponibles                                ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        self.availableNetwork = Frame(self.NetworkNotebook)
-        self.groupNetwork = pmw.Group(self.availableNetwork,tag_text="Redes Disponibles en la Organización")
+        #self.availableNetwork = Frame(self.NetworkNotebook)
+        self.groupNetwork = pmw.Group(root,tag_text="Redes Disponibles en la Organización")
         self.groupNetwork.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
 
         
@@ -35,19 +35,19 @@ class Networks():
 
         self.NetworkTable.heading("#0",text="",anchor=CENTER)
         self.NetworkTable.heading("Network_id",text="Id",anchor=CENTER)
-        self.NetworkTable.heading("Network_name",text="Name",anchor=CENTER)
+        self.NetworkTable.heading("Network_name",text="Nombre de la red",anchor=CENTER)
         self.show()
 
 
         self.NetworkTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
         self.containerTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
         
-        self.availableNetwork.pack()
+        #self.availableNetwork.pack()
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Configuración Notebook                                    ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        self.NetworkNotebook.pack(expand=YES, fill=BOTH)
-        self.NetworkNotebook.add(self.availableNetwork,text="Redes Disponibles")
+        #self.NetworkNotebook.pack(expand=YES, fill=BOTH)
+        #self.NetworkNotebook.add(self.availableNetwork,text="Redes Disponibles")
 
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Acciones                                    ----

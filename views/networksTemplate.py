@@ -2,26 +2,32 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.font as tkFont
 import Pmw as pmw
+import sys
+sys.path.append("..\\")
+from controls.getNetworkDevices import getNetworkDevices
 from PIL import Image, ImageTk
+import re
 
 class NetworksTemplate():
 
-    def __init__(self, root,organization="",meraki = "",template=''):
+    def __init__(self, root,organization="",meraki = "",template='',api=''):
         self.organization = organization
         self.merakiInfo = meraki
         self.templateName = template
         self.syslogValue = StringVar()
-        self.NetworkNotebook = ttk.Notebook(root)
+        self.Devices = getNetworkDevices(api)
+        #self.NetworkNotebook = ttk.Notebook(root)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                           Página de templates disponibles                                ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        self.availableNetwork = Frame(self.NetworkNotebook)
-        self.groupNetwork = pmw.Group(self.availableNetwork,tag_text="Redes Disponibles en la Organización")
-        self.groupNetwork.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
+        #self.availableNetwork = Frame(self.NetworkNotebook)
+        self.groupNetwork = pmw.Group(root,tag_text=f"Redes en la Organización compatibles con el Template seleccionado")
+        self.groupNetwork.pack(side=TOP,expand=YES,fill=BOTH,pady=2)
 
         
         self.orgnamecontainer = Frame(self.groupNetwork.interior())
-        self.comment = Label(self.orgnamecontainer,text=self.organization).pack(side=LEFT,anchor=CENTER,padx=8,pady=1)
+        self.comment = Label(self.orgnamecontainer,text=self.organization)
+        self.comment.pack(side=LEFT,anchor=CENTER,padx=8,pady=1)
         self.orgnamecontainer.pack(side=TOP)
  
 
@@ -35,7 +41,7 @@ class NetworksTemplate():
 
         self.NetworkTable.heading("#0",text="",anchor=CENTER)
         self.NetworkTable.heading("Network_id",text="Id",anchor=CENTER)
-        self.NetworkTable.heading("Network_name",text="Name",anchor=CENTER)
+        self.NetworkTable.heading("Network_name",text="Nombre de la red",anchor=CENTER)
         self.show()
 
         """self.NetworkTable.insert(parent='',index='end',iid=0,text='',
@@ -54,27 +60,36 @@ class NetworksTemplate():
         self.NetworkTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
         self.containerTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
         
-        self.availableNetwork.pack()
+        #self.availableNetwork.pack()
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Configuración Notebook                                    ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        self.NetworkNotebook.pack(expand=YES, fill=BOTH)
-        self.NetworkNotebook.add(self.availableNetwork,text="Redes Disponibles")
+        #self.NetworkNotebook.pack(expand=YES, fill=BOTH)
+        #self.NetworkNotebook.add(self.availableNetwork,text="Redes Disponibles")
 
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Acciones                                    ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     def show(self):
+        
         n = 1
-        #print(self.merakiInfo)
         for organization in self.merakiInfo:
             if organization['organizationName'] == self.organization:
                 for network in organization['networks']:
-                    self.NetworkTable.insert(parent='',index='end',iid=n,text='',values=(n,network['Name']))
-                    n+=1
-    def update(self, organization):
+                    devices = self.Devices.getModels(network['ID'])
+                    for device in devices:
+                        print(device)
+                        match = re.search(r'MX{1}\w+', device)
+                        if match != None:
+                            print(match,"match")
+                            self.NetworkTable.insert(parent='',index='end',iid=n,text='',values=(n,network['Name']))
+                            n+=1
+                            break
+    
+    def update(self, organization, template):
         self.comment.config(text=organization)
         self.organization = organization
+        self.templateName = template
         for i in self.NetworkTable.get_children():
             self.NetworkTable.delete(i)
         self.show() 

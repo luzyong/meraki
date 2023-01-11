@@ -5,7 +5,7 @@ import Pmw as pmw
 from PIL import Image, ImageTk
 import json
 from networks import Networks
-from networks2 import NetworksTemplate
+from networksTemplate import NetworksTemplate
 
 class Organizations():
 
@@ -16,6 +16,7 @@ class Organizations():
         self.templates = StringVar()
         self.OrganizationNotebook = ttk.Notebook(root)
         self.ventanaNetwork = None
+        self.ventanaTemplateNetwork = None
         #self.file = open('../data/currentConfig.json')
         #self.currentConfig = json.load(self.file)
 
@@ -39,12 +40,14 @@ class Organizations():
 
         self.OrganizationTable.heading("#0",text="",anchor=CENTER)
         self.OrganizationTable.heading("organization_id",text="Id",anchor=CENTER)
-        self.OrganizationTable.heading("organization_name",text="Name",anchor=CENTER)
+        self.OrganizationTable.heading("organization_name",text="Nombre de la organización",anchor=CENTER)
 
         
 
         self.OrganizationTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
-        self.OrganizationTable.bind("<ButtonRelease-1>",self.select)
+        self.OrganizationTable.bind("<ButtonRelease>",self.select)
+        self.redFrame = Frame(self.availableOrganization)
+        self.redFrame.pack(side=BOTTOM,expand=YES)
         self.availableOrganization.pack()
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                           Página de asignación de templates disponibles                                ----
@@ -55,6 +58,7 @@ class Organizations():
         
         
         self.TemplatesDisponiblesContainer = Frame(self.groupTemplateOrganization.interior())
+        self.TemplatesDisponiblesLabel = Label(self.TemplatesDisponiblesContainer,text="Templates").pack(side=TOP)
         self.TemplatesDisponibles = Listbox(self.TemplatesDisponiblesContainer)
         #self.TemplatesDisponibles = ttk.Combobox(self.TemplatesDisponiblesContainer, textvariable=self.templates)
         self.TemplatesDisponibles.insert(1, "Nachos")
@@ -63,8 +67,8 @@ class Organizations():
         self.TemplatesDisponibles.insert(4, "Pizza")
         self.TemplatesDisponibles.insert(5, "Burrito")
         #self.TemplatesDisponibles['values'] = ("true","false")
-        self.okay = Button(self.TemplatesDisponiblesContainer,text="Mostrar redes compatibles",command=self.selectTemplateOrg)
-        self.okay.pack(side=BOTTOM)
+        #self.okay = Button(self.TemplatesDisponiblesContainer,text="Mostrar redes compatibles",command=self.selectTemplateOrg)
+        #self.okay.pack(side=BOTTOM)
         
         self.TemplatesDisponibles.pack(side=BOTTOM,anchor=CENTER,padx=12.5,pady=1)
         self.TemplatesDisponiblesContainer.pack(side=LEFT)
@@ -79,14 +83,16 @@ class Organizations():
 
         self.OrganizationTableTemplate.heading("#0",text="",anchor=CENTER)
         self.OrganizationTableTemplate.heading("organization_id",text="Id",anchor=CENTER)
-        self.OrganizationTableTemplate.heading("organization_name",text="Name",anchor=CENTER)
+        self.OrganizationTableTemplate.heading("organization_name",text="Nombre de la organización",anchor=CENTER)
 
 
         self.OrganizationTableTemplate
         self.OrganizationTableTemplate.pack(side=BOTTOM,expand=YES,fill=BOTH,padx=3,pady=2)
-        self.OrganizationTableTemplate.bind("<ButtonRelease-2>",self.selectTemplateOrg)
-        self.availableTemplateOrganization.pack(side=LEFT)
-        
+        self.OrganizationTableTemplate.bind("<ButtonRelease>",self.selectTemplateOrg,add='+')
+        self.redTemplateFrame = Frame(self.availableTemplateOrganization)
+        self.redTemplateFrame.pack(side=BOTTOM,expand=YES)
+        self.availableTemplateOrganization.pack(side=BOTTOM)
+       
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Configuración Notebook                                    ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -109,7 +115,10 @@ class Organizations():
 
             org = self.OrganizationTableTemplate.item(curOrgItem)['values'][1]
             tmplt = self.TemplatesDisponibles.get(curTempItem)
-            ventanaTemplates = NetworksTemplate(root=self.root,meraki=self.merakiInfo,organization=org,template=tmplt)
+            if self.ventanaTemplateNetwork == None: 
+                self.ventanaTemplateNetwork = NetworksTemplate(root=self.redTemplateFrame,meraki=self.merakiInfo,organization=org,template=tmplt,api=self.apikeyValue)
+            else:
+                self.ventanaTemplateNetwork.update(org,tmplt)
         print(org,tmplt)
         print("Hola")
         
@@ -119,9 +128,8 @@ class Organizations():
         curItem = self.OrganizationTable.focus()
         org = self.OrganizationTable.item(curItem)['values'][1]
         
-        if self.ventanaNetwork == None:
-            self.ventanaNetwork= Networks(self.root,org,self.merakiInfo)
-            
+        if self.ventanaNetwork == None: 
+            self.ventanaNetwork= Networks(self.redFrame,org,self.merakiInfo)            
         else:
             self.ventanaNetwork.update(org)
 
