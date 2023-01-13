@@ -3,12 +3,15 @@ from tkinter import ttk
 import tkinter.font as tkFont
 import Pmw as pmw
 from PIL import Image, ImageTk
+from securityconfig import SecurityConfig
 
 class Networks():
 
-    def __init__(self, root,organization="",meraki = ""):
+    def __init__(self, root,organization="",meraki = "",api = ""):
+        self.apiKey = api
         self.organization = organization
         self.merakiInfo = meraki
+        self.root = root
         self.syslogValue = StringVar()
         #self.NetworkNotebook = ttk.Notebook(root)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -40,6 +43,7 @@ class Networks():
 
 
         self.NetworkTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
+        self.NetworkTable.bind("<ButtonRelease>",self.select)
         self.containerTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
         
         #self.availableNetwork.pack()
@@ -64,7 +68,19 @@ class Networks():
         self.organization = organization
         for i in self.NetworkTable.get_children():
             self.NetworkTable.delete(i)
-        self.show()    
+        self.show()  
+
+    def select(self,event=None):
+        curItem = self.NetworkTable.focus()
+        org = self.NetworkTable.item(curItem)['values'][1]
+        
+        self.root.destroy()
+        root = Tk()
+        root.geometry("800x500")
+        root.resizable(width=False, height=False)
+        ventanaNetwork= SecurityConfig(root,self.apiKey,self.merakiInfo) 
+        root.mainloop()           
+
 #root = Tk()
 #root.geometry("800x500")
 #root.resizable(width=False, height=False)

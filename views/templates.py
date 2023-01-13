@@ -3,11 +3,15 @@ from tkinter import ttk
 import tkinter.font as tkFont
 import Pmw as pmw
 from PIL import Image, ImageTk
+import os,re
 
 class Templates():
 
     def __init__(self, root):
         self.syslogValue = StringVar()
+        self.webSearch = StringVar()
+        self.youtube = StringVar()
+        self.templatesFiles = os.listdir("../data/templates")
         self.templateNotebook = ttk.Notebook(root)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                           Página de templates disponibles                                ----
@@ -28,19 +32,7 @@ class Templates():
         self.templatesTable.heading("template_id",text="Id",anchor=CENTER)
         self.templatesTable.heading("template_name",text="Name",anchor=CENTER)
         self.templatesTable.heading("template_compatibility",text="Compatibility",anchor=CENTER)
-
-        self.templatesTable.insert(parent='',index='end',iid=0,text='',
-        values=('1','Ninja','101','Oklahoma', 'Moore'))
-        self.templatesTable.insert(parent='',index='end',iid=1,text='',
-        values=('2','Ranger','102','Wisconsin', 'Green Bay'))
-        self.templatesTable.insert(parent='',index='end',iid=2,text='',
-        values=('3','Deamon','103', 'California', 'Placentia'))
-        self.templatesTable.insert(parent='',index='end',iid=3,text='',
-        values=('4','Dragon','104','New York' , 'White Plains'))
-        self.templatesTable.insert(parent='',index='end',iid=4,text='',
-        values=('5','CrissCross','105','California', 'San Diego'))
-        self.templatesTable.insert(parent='',index='end',iid=5,text='',
-        values=('6','ZaqueriBlack','106','Wisconsin' , 'TONY'))
+        self.showTemplates()
 
         self.templatesTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
         
@@ -149,13 +141,111 @@ class Templates():
         self.newTemplatel7.pack(side=LEFT,expand=YES, fill=BOTH)
         self.Label7.pack(side=LEFT,expand=YES, fill=BOTH)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        #----                                Página de content filtering                                 ----
+        #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        self.wholecontainer = Frame(self.templateNotebook)
+        self.categoryBlocking = Frame(self.wholecontainer)
+        self.groupContent = pmw.Group(self.categoryBlocking,tag_text="Categorías de bloqueo")
+        self.groupContent.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
+
+        self.ContentContainer = Frame(self.groupContent.interior())
+        self.ContentLabel = Label(self.ContentContainer,text="Categorías de contenido").pack(side=TOP)
+        self.Content = Entry(self.ContentContainer).pack(side=TOP,anchor=CENTER,ipadx=10,ipady=45)
+        self.ContentContainer.pack(side=LEFT,expand=YES,fill=BOTH)
+
+        self.ThreatContainer = Frame(self.groupContent.interior())
+        self.ThreatLabel = Label(self.ThreatContainer,text="Categorías de amenaza").pack(side=TOP)
+        self.Threat = Entry(self.ThreatContainer).pack(side=TOP,anchor=CENTER,ipadx=10,ipady=45)
+        self.ThreatContainer.pack(side=LEFT,expand=YES,fill=BOTH)
+        self.categoryBlocking.pack(expand=YES,fill=BOTH)
+
+
+        self.urlFiltering = Frame(self.wholecontainer)
+        self.groupURLContent = pmw.Group(self.urlFiltering,tag_text="Filtrado URL")
+        self.groupURLContent.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
+        
+        self.blockedContainer = Frame(self.groupURLContent.interior())
+        self.blockedLabel = Label(self.blockedContainer,text="Lista de URL bloqueadas").pack(side=TOP)
+        self.blocked = Entry(self.blockedContainer).pack(side=TOP,anchor=CENTER,ipadx=10,ipady=45)
+        self.blockedContainer.pack(side=LEFT,expand=YES,fill=BOTH)
+
+        self.allowedContainer = Frame(self.groupURLContent.interior())
+        self.allowedLabel = Label(self.allowedContainer,text="Lista de URL permitidas").pack(side=TOP)
+        self.allowed = Entry(self.allowedContainer).pack(side=TOP,anchor=CENTER,ipadx=10,ipady=45)
+        self.allowedContainer.pack(side=LEFT,expand=YES,fill=BOTH)
+
+        self.urlFiltering.pack(expand=YES,fill=BOTH)
+
+
+        self.searchFiltering = Frame(self.wholecontainer)
+        self.groupsearchFiltering = pmw.Group(self.searchFiltering,tag_text="Filtrado de búsquedas")
+        self.groupsearchFiltering.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
+        
+        self.searchFilteringContainer = Frame(self.groupsearchFiltering.interior())
+        self.webContainer = Frame(self.searchFilteringContainer)
+        self.webLabel = Label(self.webContainer,text="Web search").pack(side=LEFT)
+        self.webEntry = Entry(self.webContainer,textvariable=self.webSearch,state='disabled').pack(side=LEFT)
+        self.webContainer.pack(side=LEFT,expand=YES)
+        self.youtubeContainer = Frame(self.searchFilteringContainer)
+        self.youtubeLabel = Label(self.youtubeContainer,text="Restricted YouTube content").pack(side=LEFT)
+        self.youtubeEntry = Entry(self.youtubeContainer,textvariable=self.youtube,state='disabled').pack(side=LEFT)
+        self.youtubeContainer.pack(side=LEFT,expand=YES)
+        self.searchFilteringContainer.pack(side=LEFT,expand=YES,fill=BOTH)
+
+        self.searchFiltering.pack(expand=YES,fill=BOTH)
+        self.wholecontainer.pack(side=BOTTOM,expand=YES)
+         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        #----                           Página de threat protection                              ----
+        #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        self.wholethreatcontainer = Frame(self.templateNotebook)
+        self.amp = Frame(self.wholethreatcontainer)
+        self.groupamp = pmw.Group(self.amp,tag_text="Advanced Malware Protection (AMP)")
+        self.groupamp.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
+        
+        self.ampContainer = Frame(self.groupamp.interior())
+        self.modeContainer = Frame(self.ampContainer)
+        self.modeLabel = Label(self.modeContainer,text="Modo").pack(side=LEFT)
+        self.modeEntry = Entry(self.modeContainer,textvariable=self.webSearch,state='disabled').pack(side=LEFT)
+        self.modeContainer.pack(side=TOP,expand=YES)
+        self.urllistContainer = Frame(self.ampContainer)
+        self.allowurlLabel = Label(self.urllistContainer,text="Lista de URL permitidas").pack(side=LEFT)
+        self.allowurlEntry = Entry(self.urllistContainer,textvariable=self.youtube,state='disabled').pack(side=LEFT)
+        self.urllistContainer.pack(side=TOP,expand=YES)
+        self.filelistContainer = Frame(self.ampContainer)
+        self.allowfileLabel = Label(self.filelistContainer,text="Lista de archivos permitidos").pack(side=LEFT)
+        self.allowfileEntry = Entry(self.filelistContainer,textvariable=self.youtube,state='disabled').pack(side=LEFT)
+        self.filelistContainer.pack(side=TOP,expand=YES)
+        self.ampContainer.pack(side=LEFT,expand=YES,fill=BOTH)
+
+        self.groupintrusion = pmw.Group(self.amp,tag_text="Advanced Malware Protection (AMP)")
+        self.groupintrusion.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
+        self.intrusionContainer = Frame(self.groupintrusion.interior())
+        self.modeintrusionContainer = Frame(self.intrusionContainer)
+        self.modeintrusionLabel = Label(self.modeintrusionContainer,text="Modo").pack(side=LEFT)
+        self.modeintrusionEntry = Entry(self.modeintrusionContainer,textvariable=self.webSearch,state='disabled').pack(side=LEFT)
+        self.modeintrusionContainer.pack(side=TOP,expand=YES)
+        self.intrusionContainer.pack(side=LEFT,expand=YES,fill=BOTH)
+
+        self.amp.pack(expand=YES,fill=BOTH)
+        self.wholethreatcontainer.pack(side=BOTTOM,expand=YES)
+        #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Configuración Notebook                                    ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         self.templateNotebook.pack(expand=YES, fill=BOTH)
         self.templateNotebook.add(self.availableTemplates,text="Templates Disponibles")
         self.templateNotebook.add(self.Label3,text="Nuevo Template L3")
         self.templateNotebook.add(self.Label7,text="Nuevo Template L7")
+        self.templateNotebook.add(self.wholecontainer,text="Content Filtering")
+        self.templateNotebook.add(self.wholethreatcontainer,text="Threat Protection")
 
+
+    def showTemplates(self):
+        n=1
+        for file in self.templatesFiles:
+            extension = re.findall(r".txt|.json|.csv|.docx",file)
+            templateName = file.replace(extension[0],"")
+            self.templatesTable.insert(parent='',index='end',iid=n,text='',values=(n,templateName,'101'))
+            n+=1
 
 root = Tk()
 root.geometry("800x500")

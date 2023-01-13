@@ -1,4 +1,4 @@
-import meraki, requests
+import meraki
 
 
 class getNetworkDevices():

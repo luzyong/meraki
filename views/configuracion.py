@@ -53,25 +53,6 @@ class Configuracion():
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Subgrupo Resultados                                       ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        """self.grupoResult = pmw.Group(self.grupoAPI.interior(),tag_text="Resultados")
-        self.grupoResult.pack(side=BOTTOM,expand=YES,fill=BOTH,padx=3,pady=2)
-        self.OrganizationTable = ttk.Treeview(self.grupoResult.interior(),selectmode='none')
-        self.OrganizationTable['columns'] = ('organization_id', 'organization_name','network_name')
-
-        self.OrganizationTable.column("#0", width=0,  stretch=NO)
-        self.OrganizationTable.column("organization_id",anchor=CENTER,width=125)
-        self.OrganizationTable.column("organization_name",anchor=CENTER,width=125)
-        self.OrganizationTable.column("network_name",anchor=CENTER,width=125)
-        #self.OrganizationTable.column("selected",anchor=CENTER,width=125)
-
-        self.OrganizationTable.heading("#0",text="",anchor=CENTER)
-        self.OrganizationTable.heading("organization_id",text="Id",anchor=CENTER)
-        self.OrganizationTable.heading("organization_name",text="Organization",anchor=CENTER)
-        self.OrganizationTable.heading("network_name",text="Network",anchor=CENTER)
-        #self.OrganizationTable.heading("selected",text="",anchor=CENTER)
-
-        self.OrganizationTable.pack(side=BOTTOM,expand=YES,fill=BOTH,padx=3,pady=2)
-        self.OrganizationTable.bind("<ButtonRelease-1>",self.select)"""
         self.apikey.pack(side=TOP,expand=YES, fill=BOTH)
 
         self.configure = Frame(self.grupoAPI.interior())
@@ -89,7 +70,7 @@ class Configuracion():
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  
     def select(self,event=None):
         self.OrganizationTable.selection_toggle(self.OrganizationTable.focus())
-        #print (self.OrganizationTable.selection())
+
 
     def Show(self):
         newConfigObj = getStarted(self.apikeyValue.get())

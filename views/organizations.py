@@ -3,7 +3,6 @@ from tkinter import ttk
 import tkinter.font as tkFont
 import Pmw as pmw
 from PIL import Image, ImageTk
-import json
 from networks import Networks
 from networksTemplate import NetworksTemplate
 
@@ -17,9 +16,6 @@ class Organizations():
         self.OrganizationNotebook = ttk.Notebook(root)
         self.ventanaNetwork = None
         self.ventanaTemplateNetwork = None
-        #self.file = open('../data/currentConfig.json')
-        #self.currentConfig = json.load(self.file)
-
 
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                           Página de organizaciones disponibles                                ----
@@ -60,16 +56,11 @@ class Organizations():
         self.TemplatesDisponiblesContainer = Frame(self.groupTemplateOrganization.interior())
         self.TemplatesDisponiblesLabel = Label(self.TemplatesDisponiblesContainer,text="Templates").pack(side=TOP)
         self.TemplatesDisponibles = Listbox(self.TemplatesDisponiblesContainer)
-        #self.TemplatesDisponibles = ttk.Combobox(self.TemplatesDisponiblesContainer, textvariable=self.templates)
         self.TemplatesDisponibles.insert(1, "Nachos")
         self.TemplatesDisponibles.insert(2, "Sandwich")
         self.TemplatesDisponibles.insert(3, "Burger")
         self.TemplatesDisponibles.insert(4, "Pizza")
         self.TemplatesDisponibles.insert(5, "Burrito")
-        #self.TemplatesDisponibles['values'] = ("true","false")
-        #self.okay = Button(self.TemplatesDisponiblesContainer,text="Mostrar redes compatibles",command=self.selectTemplateOrg)
-        #self.okay.pack(side=BOTTOM)
-        
         self.TemplatesDisponibles.pack(side=BOTTOM,anchor=CENTER,padx=12.5,pady=1)
         self.TemplatesDisponiblesContainer.pack(side=LEFT)
 
@@ -99,10 +90,7 @@ class Organizations():
         self.OrganizationNotebook.pack(expand=YES, fill=BOTH)
         self.OrganizationNotebook.add(self.availableOrganization,text="Organizaciones Disponibles")
         self.OrganizationNotebook.add(self.availableTemplateOrganization,text="Asignar Templates")
-        self.show()
-        #if self.OrganizationTableTemplate.focus() == '' or self.TemplatesDisponibles.curselection() == '':
-        #    self.okay.config(state='disabled')
-        
+        self.show()      
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Acciones                                    ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  
@@ -121,15 +109,13 @@ class Organizations():
                 self.ventanaTemplateNetwork.update(org,tmplt)
         print(org,tmplt)
         print("Hola")
-        
-        #self.ventanaNetwork.update('')
 
     def select(self,event=None):
         curItem = self.OrganizationTable.focus()
         org = self.OrganizationTable.item(curItem)['values'][1]
         
         if self.ventanaNetwork == None: 
-            self.ventanaNetwork= Networks(self.redFrame,org,self.merakiInfo)            
+            self.ventanaNetwork= Networks(self.redFrame,org,self.merakiInfo,self.apikeyValue)            
         else:
             self.ventanaNetwork.update(org)
 
@@ -146,11 +132,3 @@ class Organizations():
                 aux = item['org_name']
                 self.OrganizationTable.insert(parent='',index='end',iid=n,text='',values=(n,aux))
                 n+=1"""
-
-#root = Tk()
-#root.geometry("800x500")
-#root.resizable(width=False, height=False)
-
-#ventana = Organizations(root)
-
-#root.mainloop()

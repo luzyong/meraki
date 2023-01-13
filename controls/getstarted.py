@@ -28,7 +28,6 @@ class getStarted():
         except:
             return None,self.status
 
-        #print(self.__networksID)
         
 
 

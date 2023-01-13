@@ -2,11 +2,11 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.font as tkFont
 import Pmw as pmw
-import sys
+import sys,re, json
 sys.path.append("..\\")
 from controls.getNetworkDevices import getNetworkDevices
 from PIL import Image, ImageTk
-import re
+
 
 class NetworksTemplate():
 
@@ -16,11 +16,9 @@ class NetworksTemplate():
         self.templateName = template
         self.syslogValue = StringVar()
         self.Devices = getNetworkDevices(api)
-        #self.NetworkNotebook = ttk.Notebook(root)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                           Página de templates disponibles                                ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        #self.availableNetwork = Frame(self.NetworkNotebook)
         self.groupNetwork = pmw.Group(root,tag_text=f"Redes en la Organización compatibles con el Template seleccionado")
         self.groupNetwork.pack(side=TOP,expand=YES,fill=BOTH,pady=2)
 
@@ -32,7 +30,7 @@ class NetworksTemplate():
  
 
         self.containerTable = Frame(self.groupNetwork.interior())
-        self.NetworkTable = ttk.Treeview(self.containerTable)
+        self.NetworkTable = ttk.Treeview(self.containerTable,selectmode='none')
         self.NetworkTable['columns'] = ('Network_id', 'Network_name')
 
         self.NetworkTable.column("#0", width=0,  stretch=NO)
@@ -44,32 +42,42 @@ class NetworksTemplate():
         self.NetworkTable.heading("Network_name",text="Nombre de la red",anchor=CENTER)
         self.show()
 
-        """self.NetworkTable.insert(parent='',index='end',iid=0,text='',
-        values=('1','Ninja','101','Oklahoma', 'Moore'))
-        self.NetworkTable.insert(parent='',index='end',iid=1,text='',
-        values=('2','Ranger','102','Wisconsin', 'Green Bay'))
-        self.NetworkTable.insert(parent='',index='end',iid=2,text='',
-        values=('3','Deamon','103', 'California', 'Placentia'))
-        self.NetworkTable.insert(parent='',index='end',iid=3,text='',
-        values=('4','Dragon','104','New York' , 'White Plains'))
-        self.NetworkTable.insert(parent='',index='end',iid=4,text='',
-        values=('5','CrissCross','105','California', 'San Diego'))
-        self.NetworkTable.insert(parent='',index='end',iid=5,text='',
-        values=('6','ZaqueriBlack','106','Wisconsin' , 'TONY'))"""
-
         self.NetworkTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
+        self.NetworkTable.bind("<ButtonRelease-1>",self.select)
         self.containerTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
-        
-        #self.availableNetwork.pack()
-        #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        #----                                Configuración Notebook                                    ----
-        #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        #self.NetworkNotebook.pack(expand=YES, fill=BOTH)
-        #self.NetworkNotebook.add(self.availableNetwork,text="Redes Disponibles")
+
+        self.configure = Frame(self.groupNetwork.interior())
+        self.addRule = Button(self.configure,text="Configurar",command=self.configurar)
+        self.addRule.pack(side=RIGHT,padx=120)
+        self.addRule.config(state='disabled')
+        self.configure.pack(side=TOP,expand=YES, fill=BOTH)
 
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Acciones                                    ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    def select(self,event=None):
+        self.NetworkTable.selection_toggle(self.NetworkTable.focus())
+
+    def configurar(self):
+        
+        curItem = self.NetworkTable.selection()
+        aux = []
+        for item in curItem:
+            for organization in self.merakiInfo:
+                seleccion = self.NetworkTable.item(item)['values']
+                for network in organization['networks']:
+                    if organization['organizationName'] == seleccion[1] and network['Name'] == seleccion[2]:
+                        data = {
+                            "org_id":organization['organizationID'],
+                            "org_name":organization['organizationName'],
+                            "net_id":network['ID'],
+                            "net_name":network['Name']
+                        }
+                        aux.append(data)
+        self.newConfig.append({"key":self.apikeyValue.get(),"configuration":aux})
+        with open('../data/currentConfig.json','w') as fp:
+            json.dump(self.newConfig,fp,indent = 4)
+
     def show(self):
         
         n = 1
