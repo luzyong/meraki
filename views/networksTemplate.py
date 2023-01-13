@@ -14,6 +14,7 @@ class NetworksTemplate():
         self.organization = organization
         self.merakiInfo = meraki
         self.templateName = template
+        self.networks = []
         self.syslogValue = StringVar()
         self.Devices = getNetworkDevices(api)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -91,9 +92,13 @@ class NetworksTemplate():
                         if match != None:
                             print(match,"match")
                             self.NetworkTable.insert(parent='',index='end',iid=n,text='',values=(n,network['Name']))
+                            self.networks.append(network['ID'])
                             n+=1
                             break
-    
+
+    def getNets(self):
+        return self.networks
+        
     def update(self, organization, template):
         self.comment.config(text=organization)
         self.organization = organization

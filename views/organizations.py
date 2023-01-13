@@ -12,6 +12,7 @@ class Organizations():
         self.root = root
         self.apikeyValue = api
         self.merakiInfo = meraki
+        self.networksID = ''
         self.templates = StringVar()
         self.OrganizationNotebook = ttk.Notebook(root)
         self.ventanaNetwork = None

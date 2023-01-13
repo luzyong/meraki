@@ -12,6 +12,7 @@ class Networks():
         self.organization = organization
         self.merakiInfo = meraki
         self.root = root
+        
         self.syslogValue = StringVar()
         #self.NetworkNotebook = ttk.Notebook(root)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -74,7 +75,6 @@ class Networks():
         curItem = self.NetworkTable.focus()
         org = self.NetworkTable.item(curItem)['values'][1]
         
-        self.root.destroy()
         root = Tk()
         root.geometry("800x500")
         root.resizable(width=False, height=False)
