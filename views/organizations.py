@@ -5,19 +5,43 @@ import Pmw as pmw
 from PIL import Image, ImageTk
 from networks import Networks
 from networksTemplate import NetworksTemplate
+from templates import Templates
+import json,re,os,sys
+sys.path.append("..\\")
+from controls import contentFiltering as cf, threat , layer3 as L3, layer7 as L7
 
 class Organizations():
 
-    def __init__(self, root, api='',meraki=''):
+    def __init__(self, root,meraki=''):
         self.root = root
-        self.apikeyValue = api
         self.merakiInfo = meraki
         self.networksID = ''
+        self.templateName = ''
+        self.organization = ''
         self.templates = StringVar()
-        self.OrganizationNotebook = ttk.Notebook(root)
+
+        self.contentFiltering = cf.setContentFiltering()
+        self.AMP = threat.setAMP()
+        self.intrusion = threat.setIntrusion()
+        self.L3 = L3.setLayer3()
+        self.L3inbound = L3.setInbound()
+        self.L7 = L7.setLayer7()
         self.ventanaNetwork = None
         self.ventanaTemplateNetwork = None
+        self.templatesFiles = os.listdir("../data/templates")
 
+
+
+        menu = Menu(self.root)
+        self.root.config(menu=menu)
+        optionMenu = Menu(menu)
+        optionMenu.add_command(label="Configuracion",command=self.option)
+        optionMenu.add_command(label="Salir")
+        menu.add_cascade(label="Opciones", menu=optionMenu)
+        viewMenu = Menu(menu)
+        viewMenu.add_command(label="Templates",command=self.views)
+        menu.add_cascade(label="Ver", menu=viewMenu)
+        self.OrganizationNotebook = ttk.Notebook(root)
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                           Página de organizaciones disponibles                                ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -44,7 +68,7 @@ class Organizations():
         self.OrganizationTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
         self.OrganizationTable.bind("<ButtonRelease>",self.select)
         self.redFrame = Frame(self.availableOrganization)
-        self.redFrame.pack(side=BOTTOM,expand=YES)
+        self.redFrame.pack(side=BOTTOM,expand=YES,fill=BOTH)
         self.availableOrganization.pack()
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                           Página de asignación de templates disponibles                                ----
@@ -57,11 +81,7 @@ class Organizations():
         self.TemplatesDisponiblesContainer = Frame(self.groupTemplateOrganization.interior())
         self.TemplatesDisponiblesLabel = Label(self.TemplatesDisponiblesContainer,text="Templates").pack(side=TOP)
         self.TemplatesDisponibles = Listbox(self.TemplatesDisponiblesContainer)
-        self.TemplatesDisponibles.insert(1, "Nachos")
-        self.TemplatesDisponibles.insert(2, "Sandwich")
-        self.TemplatesDisponibles.insert(3, "Burger")
-        self.TemplatesDisponibles.insert(4, "Pizza")
-        self.TemplatesDisponibles.insert(5, "Burrito")
+        self.showTemplates()    
         self.TemplatesDisponibles.pack(side=BOTTOM,anchor=CENTER,padx=12.5,pady=1)
         self.TemplatesDisponiblesContainer.pack(side=LEFT)
 
@@ -76,22 +96,25 @@ class Organizations():
         self.OrganizationTableTemplate.heading("#0",text="",anchor=CENTER)
         self.OrganizationTableTemplate.heading("organization_id",text="Id",anchor=CENTER)
         self.OrganizationTableTemplate.heading("organization_name",text="Nombre de la organización",anchor=CENTER)
-
-
-        self.OrganizationTableTemplate
         self.OrganizationTableTemplate.pack(side=BOTTOM,expand=YES,fill=BOTH,padx=3,pady=2)
         self.OrganizationTableTemplate.bind("<ButtonRelease>",self.selectTemplateOrg,add='+')
+
         self.redTemplateFrame = Frame(self.availableTemplateOrganization)
-        self.redTemplateFrame.pack(side=BOTTOM,expand=YES)
+        self.redTemplateFrame.pack(side=BOTTOM,expand=YES,fill=BOTH)
+
+        self.sendContainer = Frame(self.redTemplateFrame)
+        self.enviar = Button(self.sendContainer,text="Configurar Template",command=self.configurar)
+        self.enviar.pack(side=RIGHT,padx=120)
+        self.sendContainer.pack(side=BOTTOM,expand=YES,fill=BOTH)
         self.availableTemplateOrganization.pack(side=BOTTOM)
-       
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Configuración Notebook                                    ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         self.OrganizationNotebook.pack(expand=YES, fill=BOTH)
         self.OrganizationNotebook.add(self.availableOrganization,text="Organizaciones Disponibles")
         self.OrganizationNotebook.add(self.availableTemplateOrganization,text="Asignar Templates")
-        self.show()      
+        self.show()  
+        
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Acciones                                    ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  
@@ -102,21 +125,25 @@ class Organizations():
 
         if curTempItem != '' and curOrgItem != '':
 
-            org = self.OrganizationTableTemplate.item(curOrgItem)['values'][1]
-            tmplt = self.TemplatesDisponibles.get(curTempItem)
+            self.organization = self.OrganizationTableTemplate.item(curOrgItem)['values'][1]
+            self.templateName = self.TemplatesDisponibles.get(curTempItem)
             if self.ventanaTemplateNetwork == None: 
-                self.ventanaTemplateNetwork = NetworksTemplate(root=self.redTemplateFrame,meraki=self.merakiInfo,organization=org,template=tmplt,api=self.apikeyValue)
+                
+                self.ventanaTemplateNetwork = NetworksTemplate(root=self.redTemplateFrame,meraki=self.merakiInfo,organization=self.organization)
+                self.root.resizable(width=True, height=True)
+                self.root.geometry("800x700")
+                self.root.resizable(width=False, height=False)
             else:
-                self.ventanaTemplateNetwork.update(org,tmplt)
-        print(org,tmplt)
-        print("Hola")
+                self.ventanaTemplateNetwork.update(self.organization)
+        #print(org,tmplt)
+        #print("Hola")
 
     def select(self,event=None):
         curItem = self.OrganizationTable.focus()
         org = self.OrganizationTable.item(curItem)['values'][1]
         
         if self.ventanaNetwork == None: 
-            self.ventanaNetwork= Networks(self.redFrame,org,self.merakiInfo,self.apikeyValue)            
+            self.ventanaNetwork= Networks(self.redFrame,org,self.merakiInfo)            
         else:
             self.ventanaNetwork.update(org)
 
@@ -127,9 +154,39 @@ class Organizations():
             self.OrganizationTable.insert(parent='',index='end',iid=n,text='',values=(n,organization['organizationName']))
             self.OrganizationTableTemplate.insert(parent='',index='end',iid=n,text='',values=(n,organization['organizationName']))
             n+=1
-        """aux = ''
-        for item in self.currentConfig[0]['configuration']:
-            if item['org_name'] != aux:
-                aux = item['org_name']
-                self.OrganizationTable.insert(parent='',index='end',iid=n,text='',values=(n,aux))
-                n+=1"""
+    def showTemplates(self):
+        n=1
+        for file in self.templatesFiles:
+            extension = re.findall(r".txt|.json|.csv|.docx",file)
+            templateName = file.replace(extension[0],"")
+            self.TemplatesDisponibles.insert(n,templateName)
+            n+=1
+    
+    def configurar(self):
+        self.networksID = self.ventanaTemplateNetwork.getNets()
+        templateInfo = json.load(open(f"../data/templates/{self.templateName}.json"))
+        keys = templateInfo.keys()
+        for key in keys:
+            if templateInfo[key] == "" : 
+                continue
+            if key == 'content_filtering':
+                self.contentFiltering.getInfo(self.networksID,templateInfo['content_filtering'])
+            if key == 'intrusion':
+                self.intrusion.getInfo(self.networksID,templateInfo['intrusion'])
+            if key == 'malware':
+                self.AMP.getInfo(self.networksID,templateInfo['malware'])
+            if key == 'L3_inbound':
+                self.L3inbound.getInfo(self.networksID,templateInfo['L3_inbound'])
+            if key == 'L3_outbound':
+                self.L3.getInfo(self.networksID,templateInfo['L3_outbound'])
+            if key == 'L7':
+                self.L7.getInfo(self.networksID,templateInfo['L7'])
+            
+        print(self.organization,self.templateName,self.networksID)
+    
+    def views(self):
+        pass
+        
+
+    def option(self):
+        pass

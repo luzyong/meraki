@@ -73,7 +73,12 @@ class Configuracion():
 
 
     def Show(self):
-        newConfigObj = getStarted(self.apikeyValue.get())
+        data = {
+                "apiKey":self.apikeyValue.get()
+                }
+        with open('../data/currentUser.json','w') as fp:
+            json.dump(data,fp,indent = 4)
+        newConfigObj = getStarted()
         self.merakiInfo,status = newConfigObj.getInfo()
         if status:
             self.addRule.config(state='normal')
@@ -92,31 +97,14 @@ class Configuracion():
         root.geometry("800x500")
         root.resizable(width=False, height=False)
 
-        ventanaOrganization = Organizations(root,self.apikeyValue.get(),self.merakiInfo)
+        ventanaOrganization = Organizations(root,self.merakiInfo)
 
         root.mainloop()
         
-        """curItem = self.OrganizationTable.selection()
-        aux = []
-        for item in curItem:
-            #print(self.OrganizationTable.item(item)['values'])
-            for organization in self.merakiInfo:
-                seleccion = self.OrganizationTable.item(item)['values']
-                for network in organization['networks']:
-                    if organization['organizationName'] == seleccion[1] and network['Name'] == seleccion[2]:
-                        data = {
-                            "org_id":organization['organizationID'],
-                            "org_name":organization['organizationName'],
-                            "net_id":network['ID'],
-                            "net_name":network['Name']
-                        }
-                        aux.append(data)
-        self.newConfig.append({"key":self.apikeyValue.get(),"configuration":aux})
-        with open('../data/currentConfig.json','w') as fp:
-            json.dump(self.newConfig,fp,indent = 4)"""
                         
 
 root = Tk()
+
 root.geometry("800x500")
 root.resizable(width=False, height=False)
 

@@ -7,18 +7,17 @@ from securityconfig import SecurityConfig
 
 class Networks():
 
-    def __init__(self, root,organization="",meraki = "",api = ""):
-        self.apiKey = api
+    def __init__(self, root,organization="",meraki = ""):
         self.organization = organization
         self.merakiInfo = meraki
         self.root = root
         
         self.syslogValue = StringVar()
-        #self.NetworkNotebook = ttk.Notebook(root)
+
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                           Página de templates disponibles                                ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        #self.availableNetwork = Frame(self.NetworkNotebook)
+
         self.groupNetwork = pmw.Group(root,tag_text="Redes Disponibles en la Organización")
         self.groupNetwork.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
 
@@ -47,12 +46,6 @@ class Networks():
         self.NetworkTable.bind("<ButtonRelease>",self.select)
         self.containerTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
         
-        #self.availableNetwork.pack()
-        #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        #----                                Configuración Notebook                                    ----
-        #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        #self.NetworkNotebook.pack(expand=YES, fill=BOTH)
-        #self.NetworkNotebook.add(self.availableNetwork,text="Redes Disponibles")
 
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                Acciones                                    ----
@@ -62,8 +55,9 @@ class Networks():
         for organization in self.merakiInfo:
             if organization['organizationName'] == self.organization:
                 for network in organization['networks']:
-                    self.NetworkTable.insert(parent='',index='end',iid=n,text='',values=(n,network['Name']))
+                    self.NetworkTable.insert(parent='',index='end',iid=n,text='',values=(network['ID'],network['Name']))
                     n+=1
+                    
     def update(self, organization):
         self.comment.config(text=organization)
         self.organization = organization
@@ -74,11 +68,13 @@ class Networks():
     def select(self,event=None):
         curItem = self.NetworkTable.focus()
         org = self.NetworkTable.item(curItem)['values'][1]
+        netId = self.NetworkTable.item(curItem)['values'][0]
+        print(org)
         
         root = Tk()
         root.geometry("800x500")
         root.resizable(width=False, height=False)
-        ventanaNetwork= SecurityConfig(root,self.apiKey,self.merakiInfo) 
+        ventanaNetwork= SecurityConfig(root,self.merakiInfo,netId) 
         root.mainloop()           
 
 #root = Tk()

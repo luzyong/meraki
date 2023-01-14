@@ -1,0 +1,28 @@
+{
+    "metadata": {
+        "devices": [
+            "MX"
+        ],
+        "date_creation": "2023-01-14 01:33:03.004133",
+        "last_modified": "2023-01-14 01:33:03.004133"
+    },
+    "content_filtering": {
+        "allowedUrlPatterns": [
+            "https://www.pythontutorial.net/tkinter/tkinter-menu/"
+        ],
+        "blockedUrlPatterns": [
+            "https://pythonbasics.org/tkinter-menu/"
+        ],
+        "blockedUrlCategories": [
+            "meraki:contentFiltering/category/C36",
+            "meraki:contentFiltering/category/C1",
+            "meraki:contentFiltering/category/T23"
+        ],
+        "urlCategoryListSize": "topSites"
+    },
+    "intrusion": "",
+    "malware": "",
+    "L3_inbound": "",
+    "L3_outbound": "",
+    "L7": ""
+}

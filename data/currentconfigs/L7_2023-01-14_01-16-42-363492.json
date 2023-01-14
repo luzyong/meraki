@@ -1,0 +1,12 @@
+{
+    "rules": [
+        {
+            "policy": "deny",
+            "type": "application",
+            "value": {
+                "id": "meraki:layer7/application/67",
+                "name": "Xbox LIVE"
+            }
+        }
+    ]
+}

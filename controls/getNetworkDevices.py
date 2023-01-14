@@ -1,10 +1,10 @@
-import meraki
+import meraki,json
 
 
 class getNetworkDevices():
-    def __init__(self,apikey):
-        self.__apikey = apikey
-        self.__dashboard = meraki.DashboardAPI(apikey)
+    def __init__(self):
+        apikey = json.load(open('../data/currentUser.json'))
+        self.__dashboard = meraki.DashboardAPI(apikey['apiKey'])
         self.__networkDevices = ''
         self.__models = []
 

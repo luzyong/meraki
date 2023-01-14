@@ -1,0 +1,22 @@
+{
+    "blockedUrlCategories": [
+        {
+            "id": "meraki:contentFiltering/category/C1",
+            "name": "Education"
+        },
+        {
+            "id": "meraki:contentFiltering/category/C36",
+            "name": "Weapons"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T23",
+            "name": "Malicious Sites"
+        }
+    ],
+    "blockedUrlPatterns": [
+        "https://pythonbasics.org/tkinter-menu/"
+    ],
+    "allowedUrlPatterns": [
+        "https://www.pythontutorial.net/tkinter/tkinter-menu/"
+    ]
+}

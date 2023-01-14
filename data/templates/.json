@@ -1,0 +1,24 @@
+{
+    "metadata": {
+        "devices": [
+            "MX"
+        ],
+        "date_creation": "2023-01-14 01:30:54.560789",
+        "last_modified": "2023-01-14 01:30:54.560789"
+    },
+    "content_filtering": {
+        "allowedUrlPatterns": [
+            ""
+        ],
+        "blockedUrlPatterns": [
+            ""
+        ],
+        "blockedUrlCategories": [],
+        "urlCategoryListSize": "topSites"
+    },
+    "intrusion": "",
+    "malware": "",
+    "L3_inbound": "",
+    "L3_outbound": "",
+    "L7": ""
+}
