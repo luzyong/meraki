@@ -12,6 +12,7 @@ class Templates():
 
     def __init__(self, root):
         self.syslogValue = StringVar()
+        self.syslogValueInb = StringVar()
         self.webSearch = StringVar()
         self.youtube = StringVar()
         self.contentFilteringName = StringVar()
@@ -104,7 +105,7 @@ class Templates():
         self.Inpolicycontainer.pack(side=LEFT,expand=YES)
         self.Insyslogcontainer = Frame(self.configInL34)
         self.Insyslog = Label(self.Insyslogcontainer,text="syslog Enabled").pack(side=LEFT,anchor=CENTER,padx=12.5,pady=1)
-        self.InsyslogIn = ttk.Combobox(self.Insyslogcontainer, textvariable=self.syslogValue)
+        self.InsyslogIn = ttk.Combobox(self.Insyslogcontainer, textvariable=self.syslogValueInb)
         self.InsyslogIn['values'] = ("true","false")
         self.InsyslogIn.pack(side=LEFT,anchor=CENTER,padx=12.5,pady=1)
         self.Insyslogcontainer.pack(side=LEFT,expand=YES)
@@ -415,7 +416,7 @@ class Templates():
                         "destCidr": self.variablesL3[2].get(),
                         "srcPort": self.variablesL3[5].get(),
                         "srcCidr": self.variablesL3[3].get(),
-                        "syslogEnabled": self.syslogValue.get()
+                        "syslogEnabled": self.syslogValueInb.get()
                     }
                 ]
             },
@@ -451,19 +452,21 @@ class Templates():
             }
             createTemplateFile(nombre,data)    
 
-def iniciarTemplate():    
-    root = Tk()
-    root.geometry("800x500")
-    root.resizable(width=False, height=False)
+class init():
+    def __init__(self):   
+        root = Toplevel()
+        root.geometry("800x500")
+        root.resizable(width=False, height=False)
+        root.wm_title("VOSEDA NETWORKS -- Templates")
+        root.iconbitmap("isotipo_voseda_color.ico")
+        ventana = Templates(root)
 
-    ventana = Templates(root)
+        root.mainloop()
 
-    root.mainloop()
+#root = Tk()
+#root.geometry("800x500")
+#root.resizable(width=False, height=False)
 
-root = Tk()
-root.geometry("800x500")
-root.resizable(width=False, height=False)
+#ventana = Templates(root)
 
-ventana = Templates(root)
-
-root.mainloop()
+#root.mainloop()

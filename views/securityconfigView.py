@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import tkinter.font as tkFont
 import Pmw as pmw
 from PIL import Image, ImageTk
@@ -224,72 +224,81 @@ class SecurityConfig():
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  
 
     def showCF(self):
-        cfConfig = self.contentFiltering.getInfo(self.networkId)
-        t=1
-        c=1
-        b=1
-        a =1
-        for category in cfConfig['blockedUrlCategories']:
-            matchThreat = re.search(r'[meraki:contentFiltering/category/T]{1}[\d]+', category['id'])
-            matchContent = re.search(r'[meraki:contentFiltering/category/C]{1}[\d]+', category['id'])
-            if matchThreat != None:
-                            self.Threat.insert(t, category['name'])
-                            t+=1
-            if matchContent != None:
-                            self.Content.insert(c, category['name'])
-                            c+=1
-        for blocked in cfConfig['blockedUrlPatterns']:
-            self.blocked.insert(b,blocked)
-            b+=1
-        for allowed in cfConfig['allowedUrlPatterns']:
-            self.allowed.insert(a,allowed)
-            a+=1
+        cfConfig,errorcode = self.contentFiltering.getInfo(self.networkId)
+        print(errorcode)
+        if errorcode == "0":
+            t=1
+            c=1
+            b=1
+            a =1
+            for category in cfConfig['blockedUrlCategories']:
+                matchThreat = re.search(r'[meraki:contentFiltering/category/T]{1}[\d]+', category['id'])
+                matchContent = re.search(r'[meraki:contentFiltering/category/C]{1}[\d]+', category['id'])
+                if matchThreat != None:
+                                self.Threat.insert(t, category['name'])
+                                t+=1
+                if matchContent != None:
+                                self.Content.insert(c, category['name'])
+                                c+=1
+            for blocked in cfConfig['blockedUrlPatterns']:
+                self.blocked.insert(b,blocked)
+                b+=1
+            for allowed in cfConfig['allowedUrlPatterns']:
+                self.allowed.insert(a,allowed)
+                a+=1
+        if errorcode == "1":
+            self.root.destroy()
+            messagebox.showwarning(title = "Ooops",message = "Configuración disponible solo para redes MX")
 
     def showTP(self):
         aux = ''
-        ampConfig = self.AMP.getInfo(self.networkId)
-        self.allowfileEntry.delete(0,END)
-        self.modeEntry.delete(0,END)
-        self.allowfileEntry.delete(0,END)
+        ampConfig, errorcode = self.AMP.getInfo(self.networkId)
+        if errorcode == "0":
+            self.allowfileEntry.delete(0,END)
+            self.modeEntry.delete(0,END)
+            self.allowfileEntry.delete(0,END)
 
-        self.modeEntry.insert(0,ampConfig['mode'])
+            self.modeEntry.insert(0,ampConfig['mode'])
 
-        if len(ampConfig['allowedUrls'])>0:
-            for element in ampConfig['allowedUrls']:
-                aux += element+" "
-            self.allowurlEntry.insert(0,aux)
-        else: self.allowurlEntry.insert(0,'-')
+            if len(ampConfig['allowedUrls'])>0:
+                for element in ampConfig['allowedUrls']:
+                    aux += element+" "
+                self.allowurlEntry.insert(0,aux)
+            else: self.allowurlEntry.insert(0,'-')
 
-        if len(ampConfig['allowedUrls'])>0:
-            for element in ampConfig['allowedFiles']:
-                aux += element+" "
-            self.allowfileEntry.insert(0,aux)
-        else: self.allowfileEntry.insert(0,'-')
-        intrusionConfig = self.intrusion.getInfo(self.networkId)
-        self.modeintrusionEntry.insert(0,intrusionConfig['mode'])
-        self.modeEntry.configure(state='disabled')
-        self.allowfileEntry.configure(state='disabled')
-        self.allowurlEntry.configure(state='disabled')
-        self.modeintrusionEntry.configure(state='disabled')
+            if len(ampConfig['allowedUrls'])>0:
+                for element in ampConfig['allowedFiles']:
+                    aux += element+" "
+                self.allowfileEntry.insert(0,aux)
+            else: self.allowfileEntry.insert(0,'-')
+        intrusionConfig, errorcode = self.intrusion.getInfo(self.networkId)
+        if errorcode == "0":
+            self.modeintrusionEntry.insert(0,intrusionConfig['mode'])
+            self.modeEntry.configure(state='disabled')
+            self.allowfileEntry.configure(state='disabled')
+            self.allowurlEntry.configure(state='disabled')
+            self.modeintrusionEntry.configure(state='disabled')
 
     def showL3(self):
-        outbound = self.L3.getInfo(self.networkId)
-        inbound = self.L3inbound.getInfo(self.networkId)
-        o=1
-        i=1
-        for rule in outbound['rules']:
-            self.L3TableO.insert(parent='',index='end',iid=o,text='',values=(o,rule['policy'],rule['comment'],rule['protocol'],rule['srcCidr'],rule['srcPort'],rule['destCidr'],rule['destPort'],rule['syslogEnabled']))
-            o+=1
-        for rule in inbound['rules']:
-            self.L3Table.insert(parent='',index='end',iid=i,text='',values=(i,rule['policy'],rule['comment'],rule['protocol'],rule['srcCidr'],rule['srcPort'],rule['destCidr'],rule['destPort'],rule['syslogEnabled']))
-            i+=1
+        outbound, errorcodeO = self.L3.getInfo(self.networkId)
+        inbound, errorcodeI = self.L3inbound.getInfo(self.networkId)
+        if errorcodeI == "0" and errorcodeO == "0":
+            o=1
+            i=1
+            for rule in outbound['rules']:
+                self.L3TableO.insert(parent='',index='end',iid=o,text='',values=(o,rule['policy'],rule['comment'],rule['protocol'],rule['srcCidr'],rule['srcPort'],rule['destCidr'],rule['destPort'],rule['syslogEnabled']))
+                o+=1
+            for rule in inbound['rules']:
+                self.L3Table.insert(parent='',index='end',iid=i,text='',values=(i,rule['policy'],rule['comment'],rule['protocol'],rule['srcCidr'],rule['srcPort'],rule['destCidr'],rule['destPort'],rule['syslogEnabled']))
+                i+=1
             
     def showL7(self):
-        configL7 = self.L7.getInfo(self.networkId)
-        n=1
-        for rule in configL7['rules']:
-            self.L7Table.insert(parent='',index='end',iid=n,text='',values=(n,rule['policy'],rule['type'],rule['value']['name']))
-            n+=1
+        configL7, errorcode = self.L7.getInfo(self.networkId)
+        if errorcode == "0":
+            n=1
+            for rule in configL7['rules']:
+                self.L7Table.insert(parent='',index='end',iid=n,text='',values=(n,rule['policy'],rule['type'],rule['value']['name']))
+                n+=1
 #root = Tk()
 #root.geometry("800x550")
 #root.resizable(width=False, height=False)

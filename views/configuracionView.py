@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 import sys
 sys.path.append("..\\")
 from controls.getstarted import getStarted 
-from organizations import Organizations
+
 
 import json
 
@@ -92,6 +92,7 @@ class Configuracion():
                 n+=1"""
 
     def configurar(self):
+        from views.organizationsView import Organizations
         self.root.destroy()
         root = Tk()
         root.geometry("800x500")
@@ -102,12 +103,16 @@ class Configuracion():
         root.mainloop()
         
                         
+class init():
+    def __init__(self):
 
-root = Tk()
+        root = Tk()
 
-root.geometry("800x500")
-root.resizable(width=False, height=False)
+        root.geometry("800x500")
+        root.resizable(width=False, height=False)
+        root.wm_title("VOSEDA NETWORKS -- Meraki Client")
+        root.iconbitmap("isotipo_voseda_color.ico")
+        configuracion = Configuracion(root)
 
-configuracion = Configuracion(root)
+        root.mainloop()
 
-root.mainloop()

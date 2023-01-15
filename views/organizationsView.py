@@ -3,9 +3,10 @@ from tkinter import ttk
 import tkinter.font as tkFont
 import Pmw as pmw
 from PIL import Image, ImageTk
-from networks import Networks
-from networksTemplate import NetworksTemplate
-from templates import Templates
+from views.networksView import Networks
+from views.networksTemplateView import NetworksTemplate
+from views.templatesView import Templates,init
+
 import json,re,os,sys
 sys.path.append("..\\")
 from controls import contentFiltering as cf, threat , layer3 as L3, layer7 as L7
@@ -14,6 +15,8 @@ class Organizations():
 
     def __init__(self, root,meraki=''):
         self.root = root
+        self.root.wm_title("VOSEDA NETWORKS -- Meraki Client")
+        self.root.iconbitmap("isotipo_voseda_color.ico")
         self.merakiInfo = meraki
         self.networksID = ''
         self.templateName = ''
@@ -36,7 +39,6 @@ class Organizations():
         self.root.config(menu=menu)
         optionMenu = Menu(menu)
         optionMenu.add_command(label="Configuracion",command=self.option)
-        optionMenu.add_command(label="Salir")
         menu.add_cascade(label="Opciones", menu=optionMenu)
         viewMenu = Menu(menu)
         viewMenu.add_command(label="Templates",command=self.views)
@@ -133,6 +135,8 @@ class Organizations():
                 self.root.resizable(width=True, height=True)
                 self.root.geometry("800x700")
                 self.root.resizable(width=False, height=False)
+                self.root.wm_title("VOSEDA NETWORKS -- Meraki Client")
+                self.root.iconbitmap("isotipo_voseda_color.ico")
             else:
                 self.ventanaTemplateNetwork.update(self.organization)
         #print(org,tmplt)
@@ -185,8 +189,10 @@ class Organizations():
         print(self.organization,self.templateName,self.networksID)
     
     def views(self):
-        pass
+        ventana = init()
         
 
     def option(self):
-        pass
+        from views.configuracionView import Configuracion,init as cinit
+        self.root.destroy()
+        ventana = cinit()

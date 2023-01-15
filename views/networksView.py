@@ -3,7 +3,7 @@ from tkinter import ttk
 import tkinter.font as tkFont
 import Pmw as pmw
 from PIL import Image, ImageTk
-from securityconfig import SecurityConfig
+from views.securityconfigView import SecurityConfig
 
 class Networks():
 
@@ -74,6 +74,8 @@ class Networks():
         root = Tk()
         root.geometry("800x500")
         root.resizable(width=False, height=False)
+        root.wm_title("VOSEDA NETWORKS -- Configuración de la red")
+        root.iconbitmap("isotipo_voseda_color.ico")
         ventanaNetwork= SecurityConfig(root,self.merakiInfo,netId) 
         root.mainloop()           
 

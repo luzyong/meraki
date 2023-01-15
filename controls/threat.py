@@ -6,17 +6,21 @@ class getAMP():
         apikey = json.load(open('../data/currentUser.json'))
         self.__dashboard = meraki.DashboardAPI(apikey['apiKey'])
         self.__infoContentFiltering = ''
-
+        self.errorcode = '0'
     
     def setInfo(self,network_id):
-        self.__infoContentFiltering = self.__dashboard.appliance.getNetworkApplianceSecurityMalware(network_id)
+        try:
+            self.__infoContentFiltering = self.__dashboard.appliance.getNetworkApplianceSecurityMalware(network_id)
+        except:
+            self.errorcode = '1'
 
     def getInfo(self,network_id):
         self.setInfo(network_id)
         nombre = str(datetime.today()).replace(" ","_").replace(".","-").replace(":","-")
         with open(f"../data/currentconfigs/{network_id}_AMP_{nombre}.json",'w') as fp:
             json.dump(self.__infoContentFiltering,fp,indent=4)
-        return self.__infoContentFiltering
+        if self.errorcode == "0": return self.__infoContentFiltering, self.errorcode
+        if self.errorcode == "1": return None, self.errorcode
 
 class setAMP():
     def __init__(self):
@@ -38,19 +42,21 @@ class getIntrusion():
         apikey = json.load(open('../data/currentUser.json'))
         self.__dashboard = meraki.DashboardAPI(apikey['apiKey'])
         self.__infoContentFiltering=''
-
+        self.errorcode = '0'
     
     def setInfo(self,network_id):
-
-        self.__infoContentFiltering = self.__dashboard.appliance.getNetworkApplianceSecurityIntrusion(network_id)
-        #print(infoContentFiltering)
+        try:
+            self.__infoContentFiltering = self.__dashboard.appliance.getNetworkApplianceSecurityIntrusion(network_id)
+        except:
+            self.errorcode = '1'
 
     def getInfo(self,network_id):
         self.setInfo(network_id)
         nombre = str(datetime.today()).replace(" ","_").replace(".","-").replace(":","-")
         with open(f"../data/currentconfigs/{network_id}_Intrusion_{nombre}.json",'w') as fp:
             json.dump(self.__infoContentFiltering,fp,indent=4)
-        return self.__infoContentFiltering
+        if self.errorcode == "0": return self.__infoContentFiltering, self.errorcode
+        if self.errorcode == "1": return None, self.errorcode
 
 class setIntrusion():
     def __init__(self):

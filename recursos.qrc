@@ -1,7 +1,0 @@
-<RCC>
-  <qresource prefix="prefijoNuevo">
-    <file>log_voseda_blanco.png</file>
-    <file>log_voseda_color.png</file>
-    <file>isotipo_voseda_color.png</file>
-  </qresource>
-</RCC>
