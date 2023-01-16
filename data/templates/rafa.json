@@ -1,0 +1,42 @@
+{
+    "metadata": {
+        "devices": [
+            "MX"
+        ],
+        "date_creation": "2023-01-14 01:53:34.038146",
+        "last_modified": "2023-01-14 01:53:34.038146"
+    },
+    "content_filtering": {
+        "allowedUrlPatterns": [
+            ""
+        ],
+        "blockedUrlPatterns": [
+            ""
+        ],
+        "blockedUrlCategories": [
+            "meraki:contentFiltering/category/C36",
+            "meraki:contentFiltering/category/C78",
+            "meraki:contentFiltering/category/C77",
+            "meraki:contentFiltering/category/C52",
+            "meraki:contentFiltering/category/C64",
+            "meraki:contentFiltering/category/C22",
+            "meraki:contentFiltering/category/C75",
+            "meraki:contentFiltering/category/C16",
+            "meraki:contentFiltering/category/C50",
+            "meraki:contentFiltering/category/C49",
+            "meraki:contentFiltering/category/C99",
+            "meraki:contentFiltering/category/C47",
+            "meraki:contentFiltering/category/T05",
+            "meraki:contentFiltering/category/T04",
+            "meraki:contentFiltering/category/T02",
+            "meraki:contentFiltering/category/T03",
+            "meraki:contentFiltering/category/T01"
+        ],
+        "urlCategoryListSize": "topSites"
+    },
+    "intrusion": "",
+    "malware": "",
+    "L3_inbound": "",
+    "L3_outbound": "",
+    "L7": ""
+}

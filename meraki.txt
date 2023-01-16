@@ -1,4 +1,0 @@
-Meraki
-
-Organizaciones
-api key --> get organizations (org id), get organization networks (list networks), get network devices (modelos)

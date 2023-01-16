@@ -1,10 +1,12 @@
-import meraki
+import meraki,json
 
 class getStarted():
-    def __init__(self,apikey):
-        self.__dashboard = meraki.DashboardAPI(apikey)
+    def __init__(self):
+        apikey = json.load(open('../data/currentUser.json'))
+        self.__dashboard = meraki.DashboardAPI(apikey['apiKey'])
         self.__organizationsID = self.__dashboard.organizations.getOrganizations()
         self.__networksID = []
+        self.status = False
 
     def setInfo(self):
         for organization in self.__organizationsID:
@@ -20,9 +22,14 @@ class getStarted():
             self.__networksID.append(data)
             
     def getInfo(self):
-        self.setInfo()
-        print(self.__networksID)
-        return self.__networksID
+        try:
+            self.setInfo()
+            self.status = True
+            return self.__networksID,self.status
+        except:
+            return None,self.status
+
+        
 
 
 
