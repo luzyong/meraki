@@ -225,7 +225,6 @@ class SecurityConfig():
 
     def showCF(self):
         cfConfig,errorcode = self.contentFiltering.getInfo(self.networkId)
-        print(errorcode)
         if errorcode == "0":
             t=1
             c=1

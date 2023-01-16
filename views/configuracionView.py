@@ -19,14 +19,6 @@ class Configuracion():
         self.merakiInfo = ""
         self.newConfig = []
         self.configNotebook = ttk.Notebook(root)
-        #----Seccion de imagen----
-        #self.VosedaFrame = Frame(self.master)
-        #self.imageVoseda = Canvas(self.VosedaFrame)
-        #self.imageVoseda.pack(padx=1,pady=1)
-        #self.img = ImageTk.PhotoImage(Image.open("C:\\Users\\LuzYong\\Documents\\Trabajo\\ScriptsPython\\Meraki\\isotipo_voseda_color.png"))
-        #self.imageVoseda.create_image(50,50,anchor=NW,image=self.img)
-        #self.VosedaFrame.pack()
-        #self.master.pack()
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                                   Página de configuración                                ----
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

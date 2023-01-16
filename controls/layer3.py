@@ -31,10 +31,10 @@ class setInbound():
     def setInfo(self,networks_id,data):
         for network_id in networks_id:
             infoLayer3 = self.__dashboard.applianceupdateNetworkApplianceFirewallInboundFirewallRules(network_id, rules=data['rules'])        
-            print(infoLayer3)
 
     def getInfo(self,network_id,data):
         self.setInfo(network_id,data)
+
 class getLayer3():
     def __init__(self):
         apikey = json.load(open('../data/currentUser.json'))
@@ -64,7 +64,7 @@ class setLayer3():
     def setInfo(self,networks_id,data):
         for network_id in networks_id:
             infoLayer3 = self.__dashboard.appliance.updateNetworkApplianceFirewallL3FirewallRules(network_id, rules=data['rules'])        
-            print(infoLayer3)
+
 
     def getInfo(self,network_id,data):
         self.setInfo(network_id,data)

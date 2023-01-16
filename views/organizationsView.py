@@ -139,8 +139,7 @@ class Organizations():
                 self.root.iconbitmap("isotipo_voseda_color.ico")
             else:
                 self.ventanaTemplateNetwork.update(self.organization)
-        #print(org,tmplt)
-        #print("Hola")
+
 
     def select(self,event=None):
         curItem = self.OrganizationTable.focus()
@@ -186,7 +185,6 @@ class Organizations():
             if key == 'L7':
                 self.L7.getInfo(self.networksID,templateInfo['L7'])
             
-        print(self.organization,self.templateName,self.networksID)
     
     def views(self):
         ventana = init()

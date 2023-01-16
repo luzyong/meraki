@@ -350,7 +350,6 @@ class Templates():
 
     def templateCF(self):
         nombre = self.contentFilteringName.get()
-        print(nombre)
         allowedUrl = self.variablesCF[3].get().split(",")
         blockedUrl = self.variablesCF[2].get().split(",")
         categories = self.variablesCF[0].get().split(",")+self.variablesCF[1].get().split(",")

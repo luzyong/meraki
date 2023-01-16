@@ -2,7 +2,6 @@ import json,os
 from datetime import datetime
 
 def createTemplateFile(name='',data=''):
-    print(name,data)
     templatesFiles = os.listdir("../data/templates")
     archivo = name+'.json'
     datakeys = data.keys()

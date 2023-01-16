@@ -32,7 +32,7 @@ class setAMP():
     def setInfo(self,networks_id,data):
         for network_id in networks_id:
             self.__infoContentFiltering = self.__dashboard.appliance.updateNetworkApplianceSecurityMalware(network_id, mode=data['mode'], allowedUrls=data['allowedUrls'],allowedFiles=data['allowedFiles'])
-            print(self.__infoContentFiltering)
+
 
     def getInfo(self,network_id,data):
         self.setInfo(network_id,data)
@@ -68,7 +68,6 @@ class setIntrusion():
     def setInfo(self,networks_id,data):
         for network_id in networks_id:
             self.__infoContentFiltering = self.__dashboard.appliance.updateNetworkApplianceSecurityIntrusion(network_id,mode=data['mode'],idsRulesets=data['idsRulesets'],protectedNetworks=data['protectedNetworks'])
-            print(self.__infoContentFiltering)
 
     def getInfo(self,network_id,data):
         self.setInfo(network_id,data)

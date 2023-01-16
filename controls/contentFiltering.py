@@ -31,9 +31,7 @@ class setContentFiltering():
     
     def setInfo(self,networks_id,data):
         for network_id in networks_id:
-            print(network_id)
             self.__infoContentFiltering = self.__dashboard.appliance.updateNetworkApplianceContentFiltering(network_id, allowedUrlPatterns=data['allowedUrlPatterns'], blockedUrlPatterns=data['blockedUrlPatterns'], blockedUrlCategories=data['blockedUrlCategories'], urlCategoryListSize=data['urlCategoryListSize'])
-            print(self.__infoContentFiltering,data)
 
     def getInfo(self,network_id,data):
         self.setInfo(network_id,data)

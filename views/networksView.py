@@ -69,7 +69,6 @@ class Networks():
         curItem = self.NetworkTable.focus()
         org = self.NetworkTable.item(curItem)['values'][1]
         netId = self.NetworkTable.item(curItem)['values'][0]
-        print(org)
         
         root = Tk()
         root.geometry("800x500")

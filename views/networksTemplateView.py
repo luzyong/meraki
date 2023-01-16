@@ -69,10 +69,8 @@ class NetworksTemplate():
                 for network in organization['networks']:
                     devices = self.Devices.getModels(network['ID'])
                     for device in devices:
-                        print(device)
                         match = re.search(r'MX{1}\w+', device)
                         if match != None:
-                            print(match,"match")
                             self.NetworkTable.insert(parent='',index='end',iid=n,text='',values=(network['ID'],network['Name']))
                             n+=1
                             break

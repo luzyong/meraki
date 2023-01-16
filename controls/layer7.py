@@ -31,7 +31,7 @@ class setLayer7():
     def setInfo(self,networks_id,data):
         for network_id in networks_id:
             infoLayer7 = self.__dashboard.appliance.updateNetworkApplianceFirewallL7FirewallRules(network_id, rules=data['rules'])        
-            print(infoLayer7)
+            
 
     def getInfo(self,network_id,data):
         self.setInfo(network_id,data)
