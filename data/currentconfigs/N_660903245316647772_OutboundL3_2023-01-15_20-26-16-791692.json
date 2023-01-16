@@ -1,0 +1,54 @@
+{
+    "rules": [
+        {
+            "comment": "Bloqueo por Ramsonware IP",
+            "policy": "deny",
+            "protocol": "any",
+            "srcPort": "Any",
+            "srcCidr": "Any",
+            "destPort": "Any",
+            "destCidr": "109.237.97.204/32",
+            "syslogEnabled": false
+        },
+        {
+            "comment": "Bloqueo por Ramsonware Port 445",
+            "policy": "deny",
+            "protocol": "tcp",
+            "srcPort": "Any",
+            "srcCidr": "Any",
+            "destPort": "445",
+            "destCidr": "Any",
+            "syslogEnabled": false
+        },
+        {
+            "comment": "Bloqueo por Ramsonware Port 3389",
+            "policy": "deny",
+            "protocol": "tcp",
+            "srcPort": "Any",
+            "srcCidr": "Any",
+            "destPort": "3389",
+            "destCidr": "Any",
+            "syslogEnabled": false
+        },
+        {
+            "comment": "Bloqueo por Ramsonware IP",
+            "policy": "deny",
+            "protocol": "any",
+            "srcPort": "Any",
+            "srcCidr": "192.168.129.0/24",
+            "destPort": "Any",
+            "destCidr": "10.0.0.0/8",
+            "syslogEnabled": false
+        },
+        {
+            "comment": "Default rule",
+            "policy": "allow",
+            "protocol": "Any",
+            "srcPort": "Any",
+            "srcCidr": "Any",
+            "destPort": "Any",
+            "destCidr": "Any",
+            "syslogEnabled": true
+        }
+    ]
+}

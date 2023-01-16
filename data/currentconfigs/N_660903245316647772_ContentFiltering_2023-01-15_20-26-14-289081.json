@@ -1,0 +1,122 @@
+{
+    "blockedUrlCategories": [
+        {
+            "id": "meraki:contentFiltering/category/C6",
+            "name": "Adult"
+        },
+        {
+            "id": "meraki:contentFiltering/category/C36",
+            "name": "Weapons"
+        },
+        {
+            "id": "meraki:contentFiltering/category/C22",
+            "name": "Illegal Activities"
+        },
+        {
+            "id": "meraki:contentFiltering/category/C47",
+            "name": "Illegal Drugs"
+        },
+        {
+            "id": "meraki:contentFiltering/category/C84",
+            "name": "Illegal Downloads"
+        },
+        {
+            "id": "meraki:contentFiltering/category/C119",
+            "name": "Terrorism and Violent Extremism"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T01",
+            "name": "Malware Sites"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T02",
+            "name": "Spyware and Adware"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T03",
+            "name": "Phishing"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T04",
+            "name": "Botnets"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T05",
+            "name": "Spam"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T06",
+            "name": "Exploits"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T07",
+            "name": "Mobile Threats"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T08",
+            "name": "High Risk Sites and Locations"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T09",
+            "name": "Bogon"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T10",
+            "name": "P2P Malware Node"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T11",
+            "name": "Ebanking Fraud"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T12",
+            "name": "Indicators of Compromise (IOC)"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T13",
+            "name": "Domain Generated Algorithm"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T16",
+            "name": "TOR exit Nodes"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T17",
+            "name": "Potential DNS Rebinding"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T18",
+            "name": "DNS Tunneling"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T19",
+            "name": "Dynamic DNS"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T20",
+            "name": "Newly Seen Domains"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T21",
+            "name": "Cryptojacking"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T22",
+            "name": "Linkshare"
+        },
+        {
+            "id": "meraki:contentFiltering/category/T23",
+            "name": "Malicious Sites"
+        }
+    ],
+    "blockedUrlPatterns": [
+        "tiktok.com"
+    ],
+    "allowedUrlPatterns": [
+        "bind.com.mx",
+        "iqsec.com.mx",
+        "openproj.net",
+        "youtube.com",
+        "www.dominos.com.mx"
+    ]
+}
