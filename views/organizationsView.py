@@ -1,12 +1,9 @@
 from tkinter import *
 from tkinter import ttk
-import tkinter.font as tkFont
 import Pmw as pmw
-from PIL import Image, ImageTk
 from views.networksView import Networks
 from views.networksTemplateView import NetworksTemplate
-from views.templatesView import Templates,init
-
+from views.templatesView import init
 import json,re,os,sys
 sys.path.append("..\\")
 from controls import contentFiltering as cf, threat , layer3 as L3, layer7 as L7
@@ -157,6 +154,7 @@ class Organizations():
             self.OrganizationTable.insert(parent='',index='end',iid=n,text='',values=(n,organization['organizationName']))
             self.OrganizationTableTemplate.insert(parent='',index='end',iid=n,text='',values=(n,organization['organizationName']))
             n+=1
+            
     def showTemplates(self):
         n=1
         for file in self.templatesFiles:
@@ -191,6 +189,6 @@ class Organizations():
         
 
     def option(self):
-        from views.configuracionView import Configuracion,init as cinit
+        from views.configuracionView import init as cinit
         self.root.destroy()
         ventana = cinit()

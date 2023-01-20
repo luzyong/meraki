@@ -1,0 +1,28 @@
+{
+    "metadata": {
+        "devices": [
+            "MX"
+        ],
+        "date_creation": "2023-01-16 11:27:59.559206",
+        "last_modified": "2023-01-16 11:27:59.559206"
+    },
+    "content_filtering": "",
+    "intrusion": "",
+    "malware": "",
+    "L3_inbound": {
+        "rules": [
+            {
+                "comment": "DNS",
+                "policy": "allow",
+                "protocol": "UDP",
+                "destPort": "53",
+                "destCidr": "Any",
+                "srcPort": "Any",
+                "srcCidr": "Any",
+                "syslogEnabled": "true"
+            }
+        ]
+    },
+    "L3_outbound": "",
+    "L7": ""
+}

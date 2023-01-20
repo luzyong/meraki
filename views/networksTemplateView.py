@@ -1,11 +1,10 @@
 from tkinter import *
 from tkinter import ttk
-import tkinter.font as tkFont
 import Pmw as pmw
-import sys,re, json
+import sys,re
 sys.path.append("..\\")
 from controls.getNetworkDevices import getNetworkDevices
-from PIL import Image, ImageTk
+
 
 
 class NetworksTemplate():
@@ -84,10 +83,3 @@ class NetworksTemplate():
         for i in self.NetworkTable.get_children():
             self.NetworkTable.delete(i)
         self.show() 
-#root = Tk()
-#root.geometry("800x500")
-#root.resizable(width=False, height=False)
-
-#ventana = Networks(root)
-
-#root.mainloop()

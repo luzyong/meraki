@@ -1,9 +1,7 @@
 from tkinter import *
 from tkinter import ttk, messagebox
-import tkinter.font as tkFont
 import Pmw as pmw
-from PIL import Image, ImageTk
-import json,re,sys
+import re,sys
 sys.path.append("..\\")
 from controls import contentFiltering as cf, threat , layer3 as L3, layer7 as L7
 

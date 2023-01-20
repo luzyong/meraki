@@ -1,8 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-import tkinter.font as tkFont
 import Pmw as pmw
-from PIL import Image, ImageTk
 from views.securityconfigView import SecurityConfig
 
 class Networks():
@@ -78,10 +76,3 @@ class Networks():
         ventanaNetwork= SecurityConfig(root,self.merakiInfo,netId) 
         root.mainloop()           
 
-#root = Tk()
-#root.geometry("800x500")
-#root.resizable(width=False, height=False)
-
-#ventana = Networks(root)
-
-#root.mainloop()

@@ -1,8 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-import tkinter.font as tkFont
 import Pmw as pmw
-from PIL import Image, ImageTk
 import sys
 sys.path.append("..\\")
 from controls.getstarted import getStarted 
@@ -77,11 +75,7 @@ class Configuracion():
             self.resultLabel.config(text="Su API Key es válida y puede comenzar a usar la aplicación")
         else:
             self.resultLabel.config(text="Su API Key es inválida, por favor verifíquela")
-        """n = 1
-        for organization in self.merakiInfo:
-            for network in organization['networks']:
-                self.OrganizationTable.insert(parent='',index='end',iid=n,text='',values=(n,organization['organizationName'],network['Name']))
-                n+=1"""
+
 
     def configurar(self):
         from views.organizationsView import Organizations
