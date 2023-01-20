@@ -1,8 +1,7 @@
 from tkinter import *
-from tkinter import ttk,scrolledtext
-import tkinter.font as tkFont
+from tkinter import ttk
+from datetime import datetime
 import Pmw as pmw
-from PIL import Image, ImageTk
 import os,re,json
 import sys
 sys.path.append("..\\")
@@ -12,6 +11,7 @@ class Templates():
 
     def __init__(self, root):
         self.syslogValue = StringVar()
+        self.root = root
         self.syslogValueInb = StringVar()
         self.webSearch = StringVar()
         self.youtube = StringVar()
@@ -49,7 +49,6 @@ class Templates():
         self.showTemplates()
 
         self.templatesTable.pack(side=TOP,expand=YES,fill=BOTH,padx=3,pady=2)
-        
         self.availableTemplates.pack()
         #::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         #----                          Página de creacion de nuevo template L3                         ----
@@ -101,7 +100,9 @@ class Templates():
         self.configInL34 = Frame(self.groupInconfigL3.interior())
         self.Inpolicycontainer = Frame(self.configInL34)
         self.Inpolicy = Label(self.Inpolicycontainer,text="Política").pack(side=LEFT,anchor=CENTER,padx=22,pady=1)
-        self.InpolicyIn = Entry(self.Inpolicycontainer,textvariable=self.variablesL3[6]).pack(side=LEFT,anchor=CENTER,padx=22,pady=1)
+        self.InpolicyIn = ttk.Combobox(self.Inpolicycontainer,textvariable=self.variablesL3[6])
+        self.InpolicyIn['values'] = ("allow","deny")
+        self.InpolicyIn.pack(side=LEFT,anchor=CENTER,padx=22,pady=1)
         self.Inpolicycontainer.pack(side=LEFT,expand=YES)
         self.Insyslogcontainer = Frame(self.configInL34)
         self.Insyslog = Label(self.Insyslogcontainer,text="syslog Enabled").pack(side=LEFT,anchor=CENTER,padx=12.5,pady=1)
@@ -152,7 +153,9 @@ class Templates():
         self.configL34 = Frame(self.groupconfigL3.interior())
         self.policycontainer = Frame(self.configL34)
         self.policy = Label(self.policycontainer,text="Política").pack(side=LEFT,anchor=CENTER,padx=22,pady=1)
-        self.policyIn = Entry(self.policycontainer,textvariable=self.variablesoutL3[6]).pack(side=LEFT,anchor=CENTER,padx=22,pady=1)
+        self.policyIn = ttk.Combobox(self.policycontainer,textvariable=self.variablesoutL3[6])
+        self.policyIn['values'] = ("allow","deny")
+        self.policyIn.pack(side=LEFT,anchor=CENTER,padx=22,pady=1)
         self.policycontainer.pack(side=LEFT,expand=YES)
         self.syslogcontainer = Frame(self.configL34)
         self.syslog = Label(self.syslogcontainer,text="syslog Enabled").pack(side=LEFT,anchor=CENTER,padx=12.5,pady=1)
@@ -188,11 +191,15 @@ class Templates():
         self.configL71 = Frame(self.groupconfigL7.interior())
         self.policyl7container = Frame(self.configL71)
         self.policyl7 = Label(self.policyl7container,text="Política").pack(side=LEFT,anchor=CENTER,padx=8,pady=1)
-        self.policyl7In = Entry(self.policyl7container,textvariable=self.variablesL7[0]).pack(side=LEFT,anchor=CENTER,padx=8,pady=1)
+        self.policyl7In = ttk.Combobox(self.policyl7container,textvariable=self.variablesL7[0])
+        self.policyl7In['values'] = ("allow","deny")
+        self.policyl7In.pack(side=LEFT,anchor=CENTER,padx=8,pady=1)
         self.policyl7container.pack(side=TOP,expand=YES)
         self.typecontainer = Frame(self.configL71)        
         self.type = Label(self.typecontainer,text="Tipo").pack(side=LEFT,anchor=CENTER,padx=10,pady=1)
-        self.typeIn = Entry(self.typecontainer,textvariable=self.variablesL7[1]).pack(side=LEFT,anchor=CENTER,padx=10,pady=1)
+        self.typeIn = ttk.Combobox(self.typecontainer,textvariable=self.variablesL7[1])
+        self.typeIn['values'] = ('application', 'applicationCategory', 'host', 'port', 'ipRange')
+        self.typeIn.pack(side=LEFT,anchor=CENTER,padx=10,pady=1)
         self.typecontainer.pack(side=TOP,expand=YES)
         self.valuecontainer = Frame(self.configL71)        
         self.value = Label(self.valuecontainer,text="Valor").pack(side=LEFT,anchor=CENTER,padx=10,pady=1)
@@ -337,7 +344,7 @@ class Templates():
         self.templateNotebook.add(self.Label7,text="Nuevo Template L7")
         self.templateNotebook.add(self.wholecontainer,text="Content Filtering")
         self.templateNotebook.add(self.wholethreatcontainer,text="Threat Protection")
-
+        self.root.bind("<<NotebookTabChanged>>", self.update)
 
     def showTemplates(self):
         n=1
@@ -347,109 +354,235 @@ class Templates():
             self.templatesTable.insert(parent='',index='end',iid=n,text='',values=(n,templateName,'MX'))
             n+=1
     
+    def update(self,event=None):
+        for i in self.templatesTable.get_children():
+            self.templatesTable.delete(i)
+            print("hol a")
+        self.showTemplates() 
+        self.root.update()
+        #self.root.after(10, self.update)
+
+
 
     def templateCF(self):
-        nombre = self.contentFilteringName.get()
+        nombre = self.contentFilteringName.get() if self.contentFilteringName.get() != "" else "Template_"+str(datetime.today()).replace(" ","_").replace(".","-").replace(":","-")
+
         allowedUrl = self.variablesCF[3].get().split(",")
         blockedUrl = self.variablesCF[2].get().split(",")
         categories = self.variablesCF[0].get().split(",")+self.variablesCF[1].get().split(",")
-        urlCategories = []
-        categorias = json.load(open("../data/categorias.json"))
-        for category in categories:
-            for categoria in categorias['blockedUrlCategories']:
-                if category.upper() == categoria['name'].upper():
-                    urlCategories.append(categoria['id'])
+        if categories != "":
+            urlCategories = []
+            categorias = json.load(open("../data/categorias.json"))
+            for category in categories:
+                for categoria in categorias['blockedUrlCategories']:
+                    if category.upper() == categoria['name'].upper():
+                        urlCategories.append(categoria['id'])
+        if allowedUrl == "" and blockedUrl == "" and categories == "": data = {"content_filtering":""}
+        else:
+            data={
+                    "content_filtering":{
+                        "allowedUrlPatterns": allowedUrl,
+                        "blockedUrlPatterns": blockedUrl,
+                        "blockedUrlCategories": urlCategories,
+                        "urlCategoryListSize": "topSites"
+                    }
+                }
 
-        data={
-            "content_filtering":{
-                "allowedUrlPatterns": allowedUrl,
-                "blockedUrlPatterns": blockedUrl,
-                "blockedUrlCategories": urlCategories,
-                "urlCategoryListSize": "topSites"
-            }
-        }
         createTemplateFile(nombre,data)
+        self.update()
 
     def templateTP(self):
-        nombre = self.threatName.get()
-        includeCidr = self.variablesIntrusion[2].get().split(",")
-        excludeCidr = self.variablesIntrusion[3].get().split(",")
-        data={
-            "intrusion":{
-                "mode": self.variablesIntrusion[0].get(),
-                "idsRulesets": self.variablesIntrusion[1].get(),
-                "protectedNetworks": {
-                    "useDefault": "false",
-                    "includedCidr": includeCidr,
-                    "excludedCidr": excludeCidr
+        nombre = self.threatName.get() if self.threatName.get() != "" else "Template_"+str(datetime.today()).replace(" ","_").replace(".","-").replace(":","-")
+        intrusionIsEmpty = False
+        malwareIsEmpty = False
+        I=0
+        M=0
+
+        for elementI,elementM in zip(self.variablesIntrusion,self.variablesMalware):
+            if elementI.get() == "": I+=1
+            if elementM.get() == "": M+=1
+
+        intrusionIsEmpty = True if I == len(self.variablesIntrusion) else intrusionIsEmpty
+        malwareIsEmpty = True if M == len(self.variablesMalware) else malwareIsEmpty
+
+        if not intrusionIsEmpty and not malwareIsEmpty:
+            includeCidr = self.variablesIntrusion[2].get().split(",")
+            excludeCidr = self.variablesIntrusion[3].get().split(",")
+            data={
+                    "intrusion":{
+                        "mode": self.variablesIntrusion[0].get(),
+                        "idsRulesets": self.variablesIntrusion[1].get(),
+                        "protectedNetworks": {
+                            "useDefault": "false",
+                            "includedCidr": includeCidr,
+                            "excludedCidr": excludeCidr
+                        }
+                    },
+                    "malware":{
+                        "mode": self.variablesMalware[0].get(),
+                        "allowedUrls": [
+                            {
+                                "url": self.variablesMalware[1].get(),
+                                "comment": "App Meraki"
+                            }
+                        ],
+                        "allowedFiles": [
+                            {
+                                "sha256": self.variablesMalware[2].get(),
+                                "comment": "App Meraki"
+                            }
+                        ]
+                    }
                 }
-            },
-            "malware":{
-                "mode": self.variablesMalware[0],
-                "allowedUrls": [
-                    {
-                        "url": self.variablesMalware[1],
-                        "comment": "App Meraki"
+        elif not intrusionIsEmpty and malwareIsEmpty:
+            includeCidr = self.variablesIntrusion[2].get().split(",")
+            excludeCidr = self.variablesIntrusion[3].get().split(",")
+            data={
+                    "intrusion":{
+                        "mode": self.variablesIntrusion[0].get(),
+                        "idsRulesets": self.variablesIntrusion[1].get(),
+                        "protectedNetworks": {
+                            "useDefault": "false",
+                            "includedCidr": includeCidr,
+                            "excludedCidr": excludeCidr
+                        }
+                    },
+                    "malware":""
+                }
+        elif intrusionIsEmpty and not malwareIsEmpty:
+            data={
+                    "intrusion":"",
+                    "malware":{
+                        "mode": self.variablesMalware[0].get(),
+                        "allowedUrls": [
+                            {
+                                "url": self.variablesMalware[1].get(),
+                                "comment": "App Meraki"
+                            }
+                        ],
+                        "allowedFiles": [
+                            {
+                                "sha256": self.variablesMalware[2].get(),
+                                "comment": "App Meraki"
+                            }
+                        ]
                     }
-                ],
-                "allowedFiles": [
-                    {
-                        "sha256": self.variablesMalware[2],
-                        "comment": "App Meraki"
-                    }
-                ]
-            }
-        }
+                }
+        elif intrusionIsEmpty and malwareIsEmpty:
+            data={
+                    "intrusion":"",
+                    "malware":""
+                }
         createTemplateFile(nombre,data)
+        self.update()
 
     def templateL3(self):
-        nombre = self.L3Name.get()
-        data={
-            "L3_inbound":{
-                "rules": [
-                    {
-                        "comment": self.variablesL3[0].get(),
-                        "policy": self.variablesL3[6].get(),
-                        "protocol": self.variablesL3[1].get(),
-                        "destPort": self.variablesL3[4].get(),
-                        "destCidr": self.variablesL3[2].get(),
-                        "srcPort": self.variablesL3[5].get(),
-                        "srcCidr": self.variablesL3[3].get(),
-                        "syslogEnabled": self.syslogValueInb.get()
-                    }
-                ]
-            },
-        "L3_outbound":{
-                "rules": [
-                    {
-                        "comment": self.variablesoutL3[0].get(),
-                        "policy": self.variablesoutL3[6].get(),
-                        "protocol": self.variablesoutL3[1].get(),
-                        "destPort": self.variablesoutL3[4].get(),
-                        "destCidr": self.variablesoutL3[2].get(),
-                        "srcPort": self.variablesoutL3[5].get(),
-                        "srcCidr": self.variablesoutL3[3].get(),
-                        "syslogEnabled": self.syslogValue.get()
-                    }
-                ]
-            }
-        }
-        createTemplateFile(nombre,data) 
+        nombre = self.L3Name.get() if self.L3Name.get() != "" else "Template_"+str(datetime.today()).replace(" ","_").replace(".","-").replace(":","-")
+        L3IsEmpty = False
+        L3OIsEmpty = False
+        I=0
+        O=0
 
-    def templateL7(self):
-            nombre = self.L7Name.get()
+        for elementI,elementO in zip(self.variablesL3,self.variablesoutL3):
+            print("yes") if elementI.get() == "" else print(type(elementI.get()))
+            if elementI.get() == "": I+=1
+            if elementO.get() == "": O+=1
+
+        L3IsEmpty = True if I == len(self.variablesL3) else L3IsEmpty
+        L3OIsEmpty = True if O == len(self.variablesoutL3) else L3OIsEmpty
+
+        if not L3OIsEmpty and not L3IsEmpty:
             data={
-                "L7":{
+                "L3_inbound":{
                     "rules": [
                         {
-                            "policy": self.variablesL7[0].get(),
-                            "type": self.variablesL7[1].get(),
-                            "value": self.variablesL7[2].get()
-                        },
+                            "comment": self.variablesL3[0].get(),
+                            "policy": self.variablesL3[6].get(),
+                            "protocol": self.variablesL3[1].get(),
+                            "destPort": self.variablesL3[4].get(),
+                            "destCidr": self.variablesL3[2].get(),
+                            "srcPort": self.variablesL3[5].get(),
+                            "srcCidr": self.variablesL3[3].get(),
+                            "syslogEnabled": self.syslogValueInb.get()
+                        }
                     ]
-                }
+                },
+                "L3_outbound":{
+                        "rules": [
+                            {
+                                "comment": self.variablesoutL3[0].get(),
+                                "policy": self.variablesoutL3[6].get(),
+                                "protocol": self.variablesoutL3[1].get(),
+                                "destPort": self.variablesoutL3[4].get(),
+                                "destCidr": self.variablesoutL3[2].get(),
+                                "srcPort": self.variablesoutL3[5].get(),
+                                "srcCidr": self.variablesoutL3[3].get(),
+                                "syslogEnabled": self.syslogValue.get()
+                            }
+                        ]
+                    }
             }
-            createTemplateFile(nombre,data)    
+        elif not L3IsEmpty and L3OIsEmpty:
+             data={
+                "L3_inbound":{
+                    "rules": [
+                        {
+                            "comment": self.variablesL3[0].get(),
+                            "policy": self.variablesL3[6].get(),
+                            "protocol": self.variablesL3[1].get(),
+                            "destPort": self.variablesL3[4].get(),
+                            "destCidr": self.variablesL3[2].get(),
+                            "srcPort": self.variablesL3[5].get(),
+                            "srcCidr": self.variablesL3[3].get(),
+                            "syslogEnabled": self.syslogValueInb.get()
+                        }
+                    ]
+                },
+                "L3_outbound":""
+            }
+        elif L3IsEmpty and not L3OIsEmpty:
+             data={
+                "L3_inbound":"",
+                "L3_outbound":{
+                        "rules": [
+                            {
+                                "comment": self.variablesoutL3[0].get(),
+                                "policy": self.variablesoutL3[6].get(),
+                                "protocol": self.variablesoutL3[1].get(),
+                                "destPort": self.variablesoutL3[4].get(),
+                                "destCidr": self.variablesoutL3[2].get(),
+                                "srcPort": self.variablesoutL3[5].get(),
+                                "srcCidr": self.variablesoutL3[3].get(),
+                                "syslogEnabled": self.syslogValue.get()
+                            }
+                        ]
+                    }
+            }
+        elif L3IsEmpty and L3OIsEmpty:
+             data={
+                "L3_inbound":"",
+                "L3_outbound":""
+            }
+        createTemplateFile(nombre,data) 
+        self.root.update()
+
+    def templateL7(self):
+            nombre = self.L7Name.get() if self.L7Name.get() != "" else "Template_"+str(datetime.today()).replace(" ","_").replace(".","-").replace(":","-")
+            if self.variablesL7[0].get() == "" and  self.variablesL7[1].get() == "" and self.variablesL7[2].get() == "": data = {"L7":""}
+            else:
+                data = {
+                    "L7":{
+                        "rules": [
+                            {
+                                "policy": self.variablesL7[0].get(),
+                                "type": self.variablesL7[1].get(),
+                                "value": self.variablesL7[2].get()
+                            },
+                        ]
+                    }
+                }
+            createTemplateFile(nombre,data)
+            self.update()    
 
 class init():
     def __init__(self):   
@@ -459,13 +592,6 @@ class init():
         root.wm_title("VOSEDA NETWORKS -- Templates")
         root.iconbitmap("isotipo_voseda_color.ico")
         ventana = Templates(root)
-
+        root.after(10, ventana.update)
         root.mainloop()
 
-#root = Tk()
-#root.geometry("800x500")
-#root.resizable(width=False, height=False)
-
-#ventana = Templates(root)
-
-#root.mainloop()

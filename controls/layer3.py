@@ -30,7 +30,7 @@ class setInbound():
     
     def setInfo(self,networks_id,data):
         for network_id in networks_id:
-            infoLayer3 = self.__dashboard.applianceupdateNetworkApplianceFirewallInboundFirewallRules(network_id, rules=data['rules'])        
+            infoLayer3 = self.__dashboard.appliance.updateNetworkApplianceFirewallInboundFirewallRules(network_id, rules=data['rules'])        
 
     def getInfo(self,network_id,data):
         self.setInfo(network_id,data)

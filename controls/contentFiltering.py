@@ -1,4 +1,4 @@
-import meraki,json,re
+import meraki,json
 from datetime import datetime
 
 class getContentFiltering():
